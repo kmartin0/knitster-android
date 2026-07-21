@@ -22,6 +22,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import nl.kmartin.knitster.R
 import nl.kmartin.knitster.data.model.Project
 import nl.kmartin.knitster.data.model.ProjectIcon
+import java.time.Clock
+import java.time.Instant
+
 
 @Composable
 fun ProjectListScreen(
@@ -117,9 +120,9 @@ private fun ProjectListContentPreview() {
     ProjectListContent(
         uiState = ProjectListUiState(
             projects = listOf(
-                Project(id = 1, name = "Simple Socks", icon = ProjectIcon.SWEATER),
-                Project(id = 2, name = "Cozy Mittens", icon = ProjectIcon.SWEATER),
-                Project(id = 3, name = "Baby Blanket", icon = ProjectIcon.SWEATER),
+                Project(id = 1, name = "Simple Socks", icon = ProjectIcon.DEFAULT, lastSavedAt = Instant.now(), createdAt = Instant.now()),
+                Project(id = 2, name = "Cozy Mittens", icon = ProjectIcon.DEFAULT, lastSavedAt = Instant.now(), createdAt = Instant.now()),
+                Project(id = 3, name = "Baby Blanket", icon = ProjectIcon.DEFAULT, lastSavedAt = Instant.now(), createdAt = Instant.now()),
             )
         ),
         onCreateProjectClick = {},

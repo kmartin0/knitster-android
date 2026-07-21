@@ -16,7 +16,7 @@ android {
 
     defaultConfig {
         applicationId = "nl.kmartin.knitster"
-        minSdk = 24
+        minSdk = 26
         targetSdk = 37
         versionCode = 1
         versionName = "1.0"
@@ -62,6 +62,10 @@ dependencies {
     ksp(libs.dagger.hilt.android.compiler)
     implementation(libs.dagger.hilt.android)
     implementation(libs.androidx.hilt)
+
+    // --- Room ---
+    ksp(libs.androidx.room.compiler)
+    implementation(libs.androidx.room.ktx)
 
     // --- Debug-only tools ---
     debugImplementation(libs.androidx.ui.tooling)

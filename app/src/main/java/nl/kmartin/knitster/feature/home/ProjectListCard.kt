@@ -15,6 +15,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import nl.kmartin.knitster.data.model.Project
 import nl.kmartin.knitster.data.model.ProjectIcon
+import java.time.Instant
 
 @Composable
 fun ProjectCard(
@@ -50,11 +51,11 @@ private fun ProjectCardPreview() {
         project = Project(
             id = 1,
             name = "Cosy Sweater",
-            icon = ProjectIcon.SWEATER,
+            icon = ProjectIcon.DEFAULT,
             notes = "Very cosy",
             rowCount = 0,
-            lastSavedAt = System.currentTimeMillis(),
-            createdAt = System.currentTimeMillis()
+            lastSavedAt = Instant.now(),
+            createdAt = Instant.now()
         ),
         onClick = {}
     )

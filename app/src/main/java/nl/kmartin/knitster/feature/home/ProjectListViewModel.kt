@@ -7,6 +7,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import nl.kmartin.knitster.data.model.Project
 import nl.kmartin.knitster.data.model.ProjectIcon
+import java.time.Instant
 import javax.inject.Inject
 
 @HiltViewModel
@@ -15,15 +16,47 @@ class ProjectListViewModel @Inject constructor() : ViewModel() {
         Project(
             id = 1,
             name = "Cozy Sweater",
-            icon = ProjectIcon.SWEATER,
+            icon = ProjectIcon.DEFAULT,
             notes = "A warm and cozy sweater knit with alpaca wool.",
-            rowCount = 128
+            rowCount = 128,
+            lastSavedAt = Instant.now(),
+            createdAt = Instant.now()
         ),
-        Project(id = 2, name = "Winter Hat", icon = ProjectIcon.SWEATER),
-        Project(id = 3, name = "Chunky Scarf", icon = ProjectIcon.SWEATER),
-        Project(id = 4, name = "Simple Socks", icon = ProjectIcon.SWEATER),
-        Project(id = 5, name = "Cozy Mittens", icon = ProjectIcon.SWEATER),
-        Project(id = 6, name = "Baby Blanket", icon = ProjectIcon.SWEATER),
+        Project(
+            id = 2,
+            name = "Winter Hat",
+            icon = ProjectIcon.DEFAULT,
+            lastSavedAt = Instant.now(),
+            createdAt = Instant.now()
+        ),
+        Project(
+            id = 3,
+            name = "Chunky Scarf",
+            icon = ProjectIcon.DEFAULT,
+            lastSavedAt = Instant.now(),
+            createdAt = Instant.now()
+        ),
+        Project(
+            id = 4,
+            name = "Simple Socks",
+            icon = ProjectIcon.DEFAULT,
+            lastSavedAt = Instant.now(),
+            createdAt = Instant.now()
+        ),
+        Project(
+            id = 5,
+            name = "Cozy Mittens",
+            icon = ProjectIcon.DEFAULT,
+            lastSavedAt = Instant.now(),
+            createdAt = Instant.now()
+        ),
+        Project(
+            id = 6,
+            name = "Baby Blanket",
+            icon = ProjectIcon.DEFAULT,
+            lastSavedAt = Instant.now(),
+            createdAt = Instant.now()
+        ),
     )
 
     private val _uiState = MutableStateFlow(

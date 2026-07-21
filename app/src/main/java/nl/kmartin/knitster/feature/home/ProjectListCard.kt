@@ -45,7 +45,7 @@ fun ProjectCard(
 // --- Preview ---
 @Preview(showBackground = true)
 @Composable
-fun ProjectCardPreview() {
+private fun ProjectCardPreview() {
     ProjectCard(
         project = Project(
             id = 1,

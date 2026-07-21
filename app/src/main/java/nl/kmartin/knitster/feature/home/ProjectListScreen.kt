@@ -12,10 +12,13 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import nl.kmartin.knitster.R
 import nl.kmartin.knitster.data.model.Project
 import nl.kmartin.knitster.data.model.ProjectIcon
@@ -24,13 +27,13 @@ import nl.kmartin.knitster.data.model.ProjectIcon
 fun ProjectListScreen(
     onProjectCreated: (Long) -> Unit,
     onProjectClick: (Long) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    viewModel: ProjectListViewModel = hiltViewModel()
 ) {
-    // Temporary hardcoded projects
-    val projects = sampleProjects
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     ProjectListContent(
-        projects = projects,
+        uiState = uiState,
         onProjectClick = onProjectClick,
         onCreateProjectClick = {},
         modifier = modifier
@@ -38,8 +41,8 @@ fun ProjectListScreen(
 }
 
 @Composable
-fun ProjectListContent(
-    projects: List<Project>,
+private fun ProjectListContent(
+    uiState: ProjectListUiState,
     onCreateProjectClick: () -> Unit,
     onProjectClick: (Long) -> Unit,
     modifier: Modifier = Modifier
@@ -53,7 +56,7 @@ fun ProjectListContent(
         }
     ) { innerPadding ->
         ProjectList(
-            projects = projects,
+            projects = uiState.projects,
             onProjectClick = onProjectClick,
             modifier = Modifier.padding(innerPadding)
         )
@@ -62,7 +65,7 @@ fun ProjectListContent(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ProjectListTopAppBar(
+private fun ProjectListTopAppBar(
     onCreateProjectClick: () -> Unit
 ) {
     TopAppBar(
@@ -85,7 +88,7 @@ fun ProjectListTopAppBar(
 }
 
 @Composable
-fun ProjectList(
+private fun ProjectList(
     projects: List<Project>,
     onProjectClick: (Long) -> Unit,
     modifier: Modifier = Modifier
@@ -110,25 +113,16 @@ fun ProjectList(
 // --- Preview ---
 @Preview(showBackground = true)
 @Composable
-fun ProjectListContentPreview() {
+private fun ProjectListContentPreview() {
     ProjectListContent(
-        projects = sampleProjects,
+        uiState = ProjectListUiState(
+            projects = listOf(
+                Project(id = 1, name = "Simple Socks", icon = ProjectIcon.SWEATER),
+                Project(id = 2, name = "Cozy Mittens", icon = ProjectIcon.SWEATER),
+                Project(id = 3, name = "Baby Blanket", icon = ProjectIcon.SWEATER),
+            )
+        ),
         onCreateProjectClick = {},
         onProjectClick = {}
     )
 }
-
-private val sampleProjects = listOf(
-    Project(
-        id = 1,
-        name = "Cozy Sweater",
-        icon = ProjectIcon.SWEATER,
-        notes = "A warm and cozy sweater knit with alpaca wool.",
-        rowCount = 128
-    ),
-    Project(id = 2, name = "Winter Hat", icon = ProjectIcon.SWEATER),
-    Project(id = 3, name = "Chunky Scarf", icon = ProjectIcon.SWEATER),
-    Project(id = 4, name = "Simple Socks", icon = ProjectIcon.SWEATER),
-    Project(id = 5, name = "Cozy Mittens", icon = ProjectIcon.SWEATER),
-    Project(id = 6, name = "Baby Blanket", icon = ProjectIcon.SWEATER),
-)

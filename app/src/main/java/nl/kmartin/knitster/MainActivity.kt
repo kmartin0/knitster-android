@@ -4,13 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeDrawingPadding
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
+import nl.kmartin.knitster.feature.home.ProjectListScreen
 import nl.kmartin.knitster.theme.KnitsterTheme
 
 class MainActivity : ComponentActivity() {
@@ -26,14 +20,10 @@ class MainActivity : ComponentActivity() {
         // Create the root Compose hierarchy, applying the app theme.
         setContent {
             KnitsterTheme {
-                Surface(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .safeDrawingPadding()
-                        .padding(8.dp)
-                ) {
-                    Text("Knitster")
-                }
+                ProjectListScreen(
+                    onProjectCreated = {},
+                    onProjectClick = {}
+                )
             }
         }
     }

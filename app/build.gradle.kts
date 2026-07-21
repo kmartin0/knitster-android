@@ -2,6 +2,8 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.hilt)
 }
 
 android {
@@ -55,6 +57,11 @@ dependencies {
 
     // --- Navigation ---
     implementation(libs.androidx.navigation.compose)
+
+    // --- Hilt ---
+    ksp(libs.dagger.hilt.android.compiler)
+    implementation(libs.dagger.hilt.android)
+    implementation(libs.androidx.hilt)
 
     // --- Debug-only tools ---
     debugImplementation(libs.androidx.ui.tooling)

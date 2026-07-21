@@ -4,9 +4,11 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import dagger.hilt.android.AndroidEntryPoint
 import nl.kmartin.knitster.navigation.AppNavigation
 import nl.kmartin.knitster.theme.KnitsterTheme
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     /**
      * Initializes the application's Compose UI.

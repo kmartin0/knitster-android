@@ -1,69 +1,32 @@
 package nl.kmartin.knitster.feature.home
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import nl.kmartin.knitster.data.model.Project
-import nl.kmartin.knitster.data.model.ProjectIcon
-import java.time.Instant
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
+import nl.kmartin.knitster.data.repository.ProjectRepository
 import javax.inject.Inject
 
 @HiltViewModel
-class ProjectListViewModel @Inject constructor() : ViewModel() {
-    private val sampleProjects = listOf(
-        Project(
-            id = 1,
-            name = "Cozy Sweater",
-            icon = ProjectIcon.DEFAULT,
-            notes = "A warm and cozy sweater knit with alpaca wool.",
-            rowCount = 128,
-            lastSavedAt = Instant.now(),
-            createdAt = Instant.now()
-        ),
-        Project(
-            id = 2,
-            name = "Winter Hat",
-            icon = ProjectIcon.DEFAULT,
-            lastSavedAt = Instant.now(),
-            createdAt = Instant.now()
-        ),
-        Project(
-            id = 3,
-            name = "Chunky Scarf",
-            icon = ProjectIcon.DEFAULT,
-            lastSavedAt = Instant.now(),
-            createdAt = Instant.now()
-        ),
-        Project(
-            id = 4,
-            name = "Simple Socks",
-            icon = ProjectIcon.DEFAULT,
-            lastSavedAt = Instant.now(),
-            createdAt = Instant.now()
-        ),
-        Project(
-            id = 5,
-            name = "Cozy Mittens",
-            icon = ProjectIcon.DEFAULT,
-            lastSavedAt = Instant.now(),
-            createdAt = Instant.now()
-        ),
-        Project(
-            id = 6,
-            name = "Baby Blanket",
-            icon = ProjectIcon.DEFAULT,
-            lastSavedAt = Instant.now(),
-            createdAt = Instant.now()
-        ),
-    )
+class ProjectListViewModel @Inject constructor(
+    private val projectRepository: ProjectRepository
+) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(
-        ProjectListUiState(
-            projects = sampleProjects
-        )
-    )
-
-    val uiState: StateFlow<ProjectListUiState> = _uiState.asStateFlow()
+    val uiState: StateFlow<ProjectListUiState> =
+        projectRepository.observeProjects()
+            .map { projects ->
+                ProjectListUiState(
+                    projects = projects,
+                    showEmptyState = projects.isEmpty(),
+                    isLoading = false
+                )
+            }
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(5_000),
+                initialValue = ProjectListUiState(isLoading = true),
+            )
 }

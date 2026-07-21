@@ -1,6 +1,7 @@
 package nl.kmartin.knitster.feature.home
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -22,7 +23,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import nl.kmartin.knitster.R
 import nl.kmartin.knitster.data.model.Project
 import nl.kmartin.knitster.data.model.ProjectIcon
-import java.time.Clock
+import nl.kmartin.knitster.ui.component.AppBarCircularProgressIndicator
 import java.time.Instant
 
 
@@ -54,22 +55,36 @@ private fun ProjectListContent(
         modifier = modifier,
         topBar = {
             ProjectListTopAppBar(
-                onCreateProjectClick = onCreateProjectClick
+                onCreateProjectClick = onCreateProjectClick,
+                isLoading = uiState.isLoading
             )
         }
     ) { innerPadding ->
-        ProjectList(
-            projects = uiState.projects,
-            onProjectClick = onProjectClick,
+        Box(
             modifier = Modifier.padding(innerPadding)
-        )
+        ) {
+            if (uiState.isLoading) {
+                return@Box
+            }
+
+            if (uiState.showEmptyState) {
+                ProjectListEmptyState()
+                return@Box
+            }
+
+            ProjectList(
+                projects = uiState.projects,
+                onProjectClick = onProjectClick,
+            )
+        }
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun ProjectListTopAppBar(
-    onCreateProjectClick: () -> Unit
+    onCreateProjectClick: () -> Unit,
+    isLoading: Boolean
 ) {
     TopAppBar(
         title = {
@@ -78,6 +93,7 @@ private fun ProjectListTopAppBar(
             )
         },
         actions = {
+            if (isLoading) AppBarCircularProgressIndicator()
             IconButton(
                 onClick = onCreateProjectClick
             ) {
@@ -113,6 +129,17 @@ private fun ProjectList(
     }
 }
 
+@Composable
+private fun ProjectListEmptyState(
+    modifier: Modifier = Modifier
+) {
+    Box(
+        modifier = modifier.padding(16.dp),
+    ) {
+        Text("No knitting project created")
+    }
+}
+
 // --- Preview ---
 @Preview(showBackground = true)
 @Composable
@@ -120,9 +147,27 @@ private fun ProjectListContentPreview() {
     ProjectListContent(
         uiState = ProjectListUiState(
             projects = listOf(
-                Project(id = 1, name = "Simple Socks", icon = ProjectIcon.DEFAULT, lastSavedAt = Instant.now(), createdAt = Instant.now()),
-                Project(id = 2, name = "Cozy Mittens", icon = ProjectIcon.DEFAULT, lastSavedAt = Instant.now(), createdAt = Instant.now()),
-                Project(id = 3, name = "Baby Blanket", icon = ProjectIcon.DEFAULT, lastSavedAt = Instant.now(), createdAt = Instant.now()),
+                Project(
+                    id = 1,
+                    name = "Simple Socks",
+                    icon = ProjectIcon.DEFAULT,
+                    lastSavedAt = Instant.now(),
+                    createdAt = Instant.now()
+                ),
+                Project(
+                    id = 2,
+                    name = "Cozy Mittens",
+                    icon = ProjectIcon.DEFAULT,
+                    lastSavedAt = Instant.now(),
+                    createdAt = Instant.now()
+                ),
+                Project(
+                    id = 3,
+                    name = "Baby Blanket",
+                    icon = ProjectIcon.DEFAULT,
+                    lastSavedAt = Instant.now(),
+                    createdAt = Instant.now()
+                ),
             )
         ),
         onCreateProjectClick = {},

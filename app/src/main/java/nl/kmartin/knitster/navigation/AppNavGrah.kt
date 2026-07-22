@@ -1,5 +1,6 @@
 package nl.kmartin.knitster.navigation
 
+import android.util.Log
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
@@ -12,8 +13,9 @@ data object ProjectListDestination
 fun NavGraphBuilder.appGraph(navController: NavHostController) {
     composable<ProjectListDestination> {
         ProjectListScreen(
-            onProjectCreated = { /* TODO: Navigate to the created project */ },
-            onProjectClick = { /* TODO: Navigate to the clicked project */ }
+            onNavigateToProjectDetail = { projectId ->
+                //TODO: Navigate the project detail
+            }
         )
     }
 }

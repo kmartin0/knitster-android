@@ -13,6 +13,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -29,17 +30,23 @@ import java.time.Instant
 
 @Composable
 fun ProjectListScreen(
-    onProjectCreated: (Long) -> Unit,
-    onProjectClick: (Long) -> Unit,
+    onNavigateToProjectDetail: (Long) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: ProjectListViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
+    LaunchedEffect(uiState.navigateToProjectId) {
+        uiState.navigateToProjectId?.let { id ->
+            onNavigateToProjectDetail(id)
+            viewModel.onNavigationHandled()
+        }
+    }
+
     ProjectListContent(
         uiState = uiState,
-        onProjectClick = onProjectClick,
-        onCreateProjectClick = {},
+        onCreateProjectClick = viewModel::createNewProject,
+        onProjectClick = viewModel::onProjectClicked,
         modifier = modifier
     )
 }
@@ -56,14 +63,14 @@ private fun ProjectListContent(
         topBar = {
             ProjectListTopAppBar(
                 onCreateProjectClick = onCreateProjectClick,
-                isLoading = uiState.isLoading
+                isLoading = uiState.isLoadingProjects || uiState.isCreatingProject
             )
         }
     ) { innerPadding ->
         Box(
             modifier = Modifier.padding(innerPadding)
         ) {
-            if (uiState.isLoading) {
+            if (uiState.isLoadingProjects) {
                 return@Box
             }
 
@@ -95,7 +102,8 @@ private fun ProjectListTopAppBar(
         actions = {
             if (isLoading) AppBarCircularProgressIndicator()
             IconButton(
-                onClick = onCreateProjectClick
+                onClick = onCreateProjectClick,
+                enabled = !isLoading
             ) {
                 Icon(
                     painter = painterResource(R.drawable.ic_add),

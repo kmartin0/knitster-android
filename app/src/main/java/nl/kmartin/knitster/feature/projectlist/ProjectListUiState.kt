@@ -1,4 +1,4 @@
-package nl.kmartin.knitster.feature.home
+package nl.kmartin.knitster.feature.projectlist
 
 import nl.kmartin.knitster.data.model.Project
 

@@ -1,4 +1,4 @@
-package nl.kmartin.knitster.feature.home
+package nl.kmartin.knitster.feature.projectlist
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -45,7 +45,7 @@ class ProjectListViewModel @Inject constructor(
         _uiState.update { it.copy(navigateToProjectId = projectId) }
     }
 
-    fun onNavigationHandled() {
+    fun onNavigateToProjectHandled() {
         _uiState.update { it.copy(navigateToProjectId = null) }
     }
 }

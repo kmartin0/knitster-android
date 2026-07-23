@@ -1,4 +1,4 @@
-package nl.kmartin.knitster.feature.home
+package nl.kmartin.knitster.feature.projectlist
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -24,9 +24,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import nl.kmartin.knitster.R
 import nl.kmartin.knitster.data.model.Project
 import nl.kmartin.knitster.data.model.ProjectIcon
+import nl.kmartin.knitster.theme.KnitsterDimensions
 import nl.kmartin.knitster.ui.component.AppBarCircularProgressIndicator
 import java.time.Instant
-
 
 @Composable
 fun ProjectListScreen(
@@ -39,7 +39,7 @@ fun ProjectListScreen(
     LaunchedEffect(uiState.navigateToProjectId) {
         uiState.navigateToProjectId?.let { id ->
             onNavigateToProjectDetail(id)
-            viewModel.onNavigationHandled()
+            viewModel.onNavigateToProjectHandled()
         }
     }
 
@@ -122,7 +122,7 @@ private fun ProjectList(
 ) {
     LazyColumn(
         modifier = modifier,
-        contentPadding = PaddingValues(8.dp),
+        contentPadding = PaddingValues(KnitsterDimensions.ScreenPadding),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         items(

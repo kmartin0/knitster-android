@@ -34,6 +34,7 @@ fun KnitsterTheme(
     MaterialTheme(
         colorScheme = colorScheme,
         typography = Typography,
+        shapes = KnitsterShapes,
         content = content
     )
 }

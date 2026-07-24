@@ -40,6 +40,7 @@ internal fun ProjectDetailNotes(
     }
 }
 
+// --- Preview ---
 @Preview(showBackground = true, heightDp = 200)
 @Composable
 private fun ProjectDetailNotesPreview() {

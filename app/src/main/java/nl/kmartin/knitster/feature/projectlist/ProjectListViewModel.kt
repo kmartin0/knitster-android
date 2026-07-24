@@ -28,10 +28,10 @@ class ProjectListViewModel @Inject constructor(
     }
 
     /**
-     * Creates a new, empty project and signals navigation to its detail screen via [ProjectListUiState.navigateToProjectId].
+     * Creates a new, empty project and exposes its ID through [ProjectListUiState.createdProjectId].
      *
-     * Save errors are exposed through [ProjectListUiState.createProjectErrorMsg]
-     * and cleared via [onCreateProjectErrorShown].
+     * Creation errors are exposed through [ProjectListUiState.createProjectErrorMsg]
+     * and cleared via [clearCreateProjectErrorMsg].
      */
     fun createNewProject() {
         viewModelScope.launch {
@@ -41,7 +41,7 @@ class ProjectListViewModel @Inject constructor(
                 check(id > 0) {
                     "Insert returned invalid id: $id"
                 }
-                _uiState.update { it.copy(navigateToProjectId = id, isCreatingProject = false) }
+                _uiState.update { it.copy(createdProjectId = id, isCreatingProject = false) }
             } catch (e: CancellationException) {
                 throw e
             } catch (e: Exception) {
@@ -56,18 +56,23 @@ class ProjectListViewModel @Inject constructor(
         }
     }
 
-    fun onCreateProjectErrorShown() {
+    /**
+     * Clears the project creation error message.
+     */
+    fun clearCreateProjectErrorMsg() {
         _uiState.update { it.copy(createProjectErrorMsg = null) }
     }
 
-    fun onProjectClicked(projectId: Long) {
-        _uiState.update { it.copy(navigateToProjectId = projectId) }
+    /**
+     * Clears the created project ID.
+     */
+    fun clearCreatedProjectId() {
+        _uiState.update { it.copy(createdProjectId = null) }
     }
 
-    fun onNavigateToProjectHandled() {
-        _uiState.update { it.copy(navigateToProjectId = null) }
-    }
-
+    /**
+     * Observes projects from the repository and updates the UI state.
+     */
     private fun observeProjects() {
         viewModelScope.launch {
             projectRepository.observeProjects().collect { projects ->

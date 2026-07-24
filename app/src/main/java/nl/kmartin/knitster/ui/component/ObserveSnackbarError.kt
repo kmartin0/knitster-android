@@ -24,7 +24,6 @@ fun ObserveSnackbarError(
     val snackBarScope = rememberCoroutineScope()
 
     LaunchedEffect(errorMessage) {
-        Log.i("TAGZ", "OBSERVESNACKBARERROR: $errorMessage")
         errorMessage?.let { message ->
             onErrorShown()
 

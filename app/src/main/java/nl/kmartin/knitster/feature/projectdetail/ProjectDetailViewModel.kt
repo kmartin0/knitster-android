@@ -118,9 +118,44 @@ class ProjectDetailViewModel @Inject constructor(
     }
 
     /**
-     * Marks the pending save error as shown.
+     * Deletes the current project.
+     *
+     * The project is expected to exist, so deleting zero rows is treated as an error.
+     * Delete errors are exposed through the UI state.
      */
-    fun onSaveProjectErrorShown() {
+    fun deleteProject() {
+        val currentProject = _uiState.value.project ?: return
+        viewModelScope.launch {
+            try {
+                check(projectRepository.deleteProject(currentProject) > 0) {
+                    "Project ${currentProject.id} was not deleted."
+                }
+
+                _uiState.update { it.copy(projectDeleted = true) }
+            } catch (e: CancellationException) {
+                // Rethrow cancellation so the coroutine can be canceled normally.
+                throw e
+            } catch (e: Exception) {
+                Log.e(TAG, "Failed to delete project ${currentProject.id}", e)
+
+                _uiState.update {
+                    it.copy(deleteProjectErrorMsg = "Failed to delete the project.")
+                }
+            }
+        }
+    }
+
+    /**
+     * Clears the pending delete project error message.
+     */
+    fun clearDeleteProjectErrorMsg() {
+        _uiState.update { it.copy(deleteProjectErrorMsg = null) }
+    }
+
+    /**
+     * Clears the pending save project error message.
+     */
+    fun clearSaveProjectErrorShown() {
         _uiState.update { it.copy(saveProjectErrorMsg = null) }
     }
 

@@ -61,6 +61,7 @@ internal fun ProjectDetailTitleSection(
     }
 }
 
+// --- Preview ---
 @Preview(showBackground = true)
 @Composable
 private fun ProjectDetailTitleSectionPreview() {

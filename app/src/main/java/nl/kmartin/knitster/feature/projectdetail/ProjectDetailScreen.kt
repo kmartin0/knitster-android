@@ -10,18 +10,29 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.foundation.text.input.rememberTextFieldState
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarResult
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -51,11 +62,20 @@ fun ProjectDetailScreen(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
+    var showDeleteProjectDialog by rememberSaveable {
+        mutableStateOf(false)
+    }
 
     ObserveSnackbarError(
         errorMessage = uiState.saveProjectErrorMsg,
         snackbarHostState = snackbarHostState,
-        onErrorShown = viewModel::onSaveProjectErrorShown
+        onErrorShown = viewModel::clearSaveProjectErrorShown
+    )
+
+    ObserveSnackbarError(
+        errorMessage = uiState.deleteProjectErrorMsg,
+        snackbarHostState = snackbarHostState,
+        onErrorShown = viewModel::clearDeleteProjectErrorMsg
     )
 
     ObserveResetRowCounterUndo(
@@ -65,12 +85,28 @@ fun ProjectDetailScreen(
         onDismiss = viewModel::clearRowCountBeforeReset
     )
 
+    ObserveProjectDeleted(
+        projectDeleted = uiState.projectDeleted,
+        onProjectDeleted = onNavigateBack
+    )
+
+    if (showDeleteProjectDialog) {
+        DeleteProjectDialog(
+            onConfirm = {
+                showDeleteProjectDialog = false
+                viewModel.deleteProject()
+            },
+            onDismiss = { showDeleteProjectDialog = false },
+            projectName = uiState.project?.name.orEmpty()
+        )
+    }
+
     ProjectDetailContent(
         modifier = modifier,
         uiState = uiState,
         snackbarHostState = snackbarHostState,
         onBackClick = onNavigateBack,
-        onDeleteClick = {},
+        onDeleteClick = { showDeleteProjectDialog = true },
         onResetCounterClick = viewModel::resetRowCounter,
         onIncrementClick = viewModel::incrementRowCounter,
         onDecrementClick = viewModel::decrementRowCounter,
@@ -194,6 +230,51 @@ private fun ObserveResetRowCounterUndo(
             }
         }
     }
+}
+
+@Composable
+private fun ObserveProjectDeleted(
+    projectDeleted: Boolean,
+    onProjectDeleted: () -> Unit
+) {
+    LaunchedEffect(projectDeleted) {
+        if (projectDeleted) onProjectDeleted()
+    }
+}
+
+@Composable
+private fun DeleteProjectDialog(
+    onConfirm: () -> Unit,
+    onDismiss: () -> Unit,
+    projectName: String
+) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = {
+            Text(
+                text = buildAnnotatedString {
+                    append("Delete ")
+                    withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
+                        append(projectName)
+                    }
+                    append("?")
+                },
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+        },
+        text = { Text("This action cannot be undone.") },
+        confirmButton = {
+            TextButton(onClick = onConfirm) {
+                Text("Delete")
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text("Cancel")
+            }
+        }
+    )
 }
 
 // --- Preview ---

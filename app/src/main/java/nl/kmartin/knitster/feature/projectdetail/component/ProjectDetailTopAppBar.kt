@@ -77,6 +77,13 @@ private fun ProjectDetailOverflowMenu(
             onDismissRequest = { showMenu = false },
         ) {
             DropdownMenuItem(
+                text = { Text("Delete project") },
+                onClick = {
+                    showMenu = false
+                    onDeleteClick()
+                },
+            )
+            DropdownMenuItem(
                 text = { Text("Reset Counter") },
                 onClick = {
                     showMenu = false
@@ -87,6 +94,7 @@ private fun ProjectDetailOverflowMenu(
     }
 }
 
+// --- Preview ---
 @Preview(showBackground = true)
 @Composable
 private fun ProjectDetailTopAppBarPreview() {

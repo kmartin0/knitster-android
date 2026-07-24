@@ -30,6 +30,7 @@ internal fun ProjectDetailLastSaved(
     )
 }
 
+// --- Preview ---
 @Preview(showBackground = true)
 @Composable
 private fun ProjectDetailLastSavedPreview() {

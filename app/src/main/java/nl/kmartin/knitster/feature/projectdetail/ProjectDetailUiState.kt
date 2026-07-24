@@ -9,5 +9,7 @@ data class ProjectDetailUiState(
     val project: Project? = null,
     val isLoadingProject: Boolean = true,
     val saveProjectErrorMsg: String? = null,
-    val rowCountBeforeReset: Int? = null
+    val deleteProjectErrorMsg: String? = null,
+    val rowCountBeforeReset: Int? = null,
+    val projectDeleted: Boolean = false
 )

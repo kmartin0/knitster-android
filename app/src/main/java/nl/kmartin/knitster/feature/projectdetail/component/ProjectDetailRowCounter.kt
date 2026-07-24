@@ -105,6 +105,7 @@ private fun CounterButton(
     }
 }
 
+// --- Preview ---
 @Preview(showBackground = true)
 @Composable
 private fun PreviewProjectDetailRowCounter() {

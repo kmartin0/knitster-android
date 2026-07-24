@@ -1,6 +1,5 @@
 package nl.kmartin.knitster.feature.projectdetail
 
-import android.util.Log
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -12,13 +11,14 @@ import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SnackbarResult
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalFocusManager
@@ -26,7 +26,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import kotlinx.coroutines.launch
 import nl.kmartin.knitster.data.model.Project
 import nl.kmartin.knitster.feature.projectdetail.component.ProjectDetailLastSaved
 import nl.kmartin.knitster.feature.projectdetail.component.ProjectDetailNotes
@@ -59,13 +58,22 @@ fun ProjectDetailScreen(
         onErrorShown = viewModel::onSaveProjectErrorShown
     )
 
+    ObserveResetRowCounterUndo(
+        uiState.rowCountBeforeReset,
+        snackbarHostState = snackbarHostState,
+        onUndo = viewModel::undoResetRowCounter,
+        onDismiss = viewModel::clearRowCountBeforeReset
+    )
+
     ProjectDetailContent(
         modifier = modifier,
         uiState = uiState,
         snackbarHostState = snackbarHostState,
         onBackClick = onNavigateBack,
-        onIncrementClick = viewModel::onIncrementRowCounter,
-        onDecrementClick = viewModel::onDecrementRowCounter,
+        onDeleteClick = {},
+        onResetCounterClick = viewModel::resetRowCounter,
+        onIncrementClick = viewModel::incrementRowCounter,
+        onDecrementClick = viewModel::decrementRowCounter,
         projectNameState = viewModel.projectNameState,
         projectNotesState = viewModel.projectNotesState,
     )
@@ -78,6 +86,8 @@ fun ProjectDetailScreen(
  * @param uiState Current UI state of the screen.
  * @param snackbarHostState State used to display snackbar message.
  * @param onBackClick Called when the back button is clicked.
+ * @param onDeleteClick Called when the delete button is clicked.
+ * @param onResetCounterClick Called when the reset button is clicked.
  * @param onIncrementClick Called when the row counter is incremented.
  * @param onDecrementClick Called when the row counter is decremented.
  * @param projectNameState State backing the project name text field.
@@ -89,6 +99,8 @@ fun ProjectDetailContent(
     uiState: ProjectDetailUiState,
     snackbarHostState: SnackbarHostState,
     onBackClick: () -> Unit,
+    onDeleteClick: () -> Unit,
+    onResetCounterClick: () -> Unit,
     onIncrementClick: () -> Unit,
     onDecrementClick: () -> Unit,
     projectNameState: TextFieldState,
@@ -112,6 +124,8 @@ fun ProjectDetailContent(
         topBar = {
             ProjectDetailTopAppBar(
                 onBackClick = onBackClick,
+                onDeleteClick = onDeleteClick,
+                onResetCounterClick = onResetCounterClick,
                 isLoading = uiState.isLoadingProject
             )
         }
@@ -151,6 +165,37 @@ fun ProjectDetailContent(
     }
 }
 
+/**
+ * Observes row counter resets and displays an undo snackbar.
+ *
+ * @param rowCountBeforeReset The row count before it was reset, or `null` if no undo is pending.
+ * @param snackbarHostState State used to display the snackbar.
+ * @param onUndo Called when the user chooses to undo the reset.
+ * @param onDismiss Called when the undo opportunity expires.
+ */
+@Composable
+private fun ObserveResetRowCounterUndo(
+    rowCountBeforeReset: Int?,
+    snackbarHostState: SnackbarHostState,
+    onUndo: () -> Unit,
+    onDismiss: () -> Unit,
+) {
+    LaunchedEffect(rowCountBeforeReset) {
+        if (rowCountBeforeReset != null) {
+            when (
+                snackbarHostState.showSnackbar(
+                    message = "Row counter reset from: $rowCountBeforeReset",
+                    actionLabel = "Undo",
+                    duration = SnackbarDuration.Short,
+                )
+            ) {
+                SnackbarResult.ActionPerformed -> onUndo()
+                SnackbarResult.Dismissed -> onDismiss()
+            }
+        }
+    }
+}
+
 // --- Preview ---
 @Preview(showBackground = true)
 @Composable
@@ -169,6 +214,8 @@ private fun ProjectDetailContentPreview() {
         ),
         snackbarHostState = remember { SnackbarHostState() },
         onBackClick = {},
+        onDeleteClick = {},
+        onResetCounterClick = {},
         onIncrementClick = {},
         onDecrementClick = {},
         projectNameState = rememberTextFieldState(

@@ -64,7 +64,7 @@ class ProjectDetailViewModel @Inject constructor(
     /**
      * Increments the current project's row counter by one.
      */
-    fun onIncrementRowCounter() {
+    fun incrementRowCounter() {
         val currentProject = _uiState.value.project ?: return
         saveProject(
             currentProject.copy(
@@ -78,7 +78,7 @@ class ProjectDetailViewModel @Inject constructor(
      *
      * The counter is not allowed to go below zero.
      */
-    fun onDecrementRowCounter() {
+    fun decrementRowCounter() {
         val currentProject = _uiState.value.project ?: return
         if (currentProject.rowCount <= 0) return
         saveProject(
@@ -86,6 +86,35 @@ class ProjectDetailViewModel @Inject constructor(
                 rowCount = currentProject.rowCount - 1
             )
         )
+    }
+
+    /**
+     * Resets the project row counter and stores the previous value in ui state so it can be undone.
+     */
+    fun resetRowCounter() {
+        val currentProject = _uiState.value.project ?: return
+        val previousCount = currentProject.rowCount
+        if (previousCount == 0) return
+
+        saveProject(currentProject.copy(rowCount = 0))
+        _uiState.update { it.copy(rowCountBeforeReset = previousCount) }
+    }
+
+    /**
+     * Restores the row counter to its value before the last reset.
+     */
+    fun undoResetRowCounter() {
+        val currentProject = _uiState.value.project ?: return
+        val previousCount = _uiState.value.rowCountBeforeReset ?: return
+        saveProject(currentProject.copy(rowCount = previousCount))
+        _uiState.update { it.copy(rowCountBeforeReset = null) }
+    }
+
+    /**
+     * Clears the stored row count used for undoing a reset.
+     */
+    fun clearRowCountBeforeReset() {
+        _uiState.update { it.copy(rowCountBeforeReset = null) }
     }
 
     /**
@@ -168,7 +197,7 @@ class ProjectDetailViewModel @Inject constructor(
                 check(projectRepository.updateProject(project) > 0) {
                     "Project ${project.id} was not updated."
                 }
-            // Rethrow cancellation so the coroutine can be canceled normally.
+                // Rethrow cancellation so the coroutine can be canceled normally.
             } catch (e: CancellationException) {
                 throw e
             } catch (e: Exception) {

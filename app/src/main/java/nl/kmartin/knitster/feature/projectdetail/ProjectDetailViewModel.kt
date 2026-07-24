@@ -21,6 +21,7 @@ import nl.kmartin.knitster.data.model.Project
 import nl.kmartin.knitster.data.repository.ProjectRepository
 import nl.kmartin.knitster.navigation.ProjectDetailDestination
 import javax.inject.Inject
+import kotlin.coroutines.cancellation.CancellationException
 import kotlin.time.Duration.Companion.milliseconds
 
 private const val TAG = "ProjectDetailViewModel"
@@ -61,20 +62,6 @@ class ProjectDetailViewModel @Inject constructor(
     }
 
     /**
-     * Requests navigation back from the project detail screen.
-     */
-    fun onBackClicked() {
-        _uiState.update { it.copy(navigateBack = true) }
-    }
-
-    /**
-     * Marks the pending back-navigation event as handled.
-     */
-    fun onNavigateBackHandled() {
-        _uiState.update { it.copy(navigateBack = false) }
-    }
-
-    /**
      * Increments the current project's row counter by one.
      */
     fun onIncrementRowCounter() {
@@ -99,6 +86,13 @@ class ProjectDetailViewModel @Inject constructor(
                 rowCount = currentProject.rowCount - 1
             )
         )
+    }
+
+    /**
+     * Marks the pending save error as shown.
+     */
+    fun onSaveProjectErrorShown() {
+        _uiState.update { it.copy(saveProjectErrorMsg = null) }
     }
 
     /**
@@ -163,14 +157,23 @@ class ProjectDetailViewModel @Inject constructor(
     }
 
     /**
-     * Update the project in the repository.
+     * Updates the project in the repository.
+     *
+     * The project is expected to exist, so updating zero rows is treated as an error.
+     * Save errors are exposed through the UI state.
      */
     private fun saveProject(project: Project) {
         viewModelScope.launch {
             try {
-                projectRepository.updateProject(project)
+                check(projectRepository.updateProject(project) > 0) {
+                    "Project ${project.id} was not updated."
+                }
+            // Rethrow cancellation so the coroutine can be canceled normally.
+            } catch (e: CancellationException) {
+                throw e
             } catch (e: Exception) {
-                Log.e(TAG, "Failed to save project ${project.id}", e)
+                Log.e(TAG, "Failed to save the update of project ${project.id}", e)
+                _uiState.update { it.copy(saveProjectErrorMsg = "Failed saving the update.") }
             }
         }
     }

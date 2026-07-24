@@ -10,22 +10,28 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import kotlinx.coroutines.launch
 import nl.kmartin.knitster.R
 import nl.kmartin.knitster.data.model.Project
 import nl.kmartin.knitster.data.model.ProjectIcon
 import nl.kmartin.knitster.theme.KnitsterDimensions
 import nl.kmartin.knitster.ui.component.AppBarCircularProgressIndicator
+import nl.kmartin.knitster.ui.component.ObserveSnackbarError
 import java.time.Instant
 
 @Composable
@@ -35,6 +41,7 @@ fun ProjectListScreen(
     viewModel: ProjectListViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val snackbarHostState = remember { SnackbarHostState() }
 
     LaunchedEffect(uiState.navigateToProjectId) {
         uiState.navigateToProjectId?.let { id ->
@@ -43,10 +50,17 @@ fun ProjectListScreen(
         }
     }
 
+    ObserveSnackbarError(
+        errorMessage = uiState.createProjectErrorMsg,
+        snackbarHostState = snackbarHostState,
+        onErrorShown = viewModel::onCreateProjectErrorShown
+    )
+
     ProjectListContent(
         uiState = uiState,
         onCreateProjectClick = viewModel::createNewProject,
         onProjectClick = viewModel::onProjectClicked,
+        snackbarHostState = snackbarHostState,
         modifier = modifier
     )
 }
@@ -56,9 +70,13 @@ private fun ProjectListContent(
     uiState: ProjectListUiState,
     onCreateProjectClick: () -> Unit,
     onProjectClick: (Long) -> Unit,
+    snackbarHostState: SnackbarHostState,
     modifier: Modifier = Modifier
 ) {
     Scaffold(
+        snackbarHost = {
+            SnackbarHost(hostState = snackbarHostState)
+        },
         modifier = modifier,
         topBar = {
             ProjectListTopAppBar(
@@ -179,6 +197,7 @@ private fun ProjectListContentPreview() {
             )
         ),
         onCreateProjectClick = {},
-        onProjectClick = {}
+        onProjectClick = {},
+        snackbarHostState = remember { SnackbarHostState() }
     )
 }

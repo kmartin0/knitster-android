@@ -1,5 +1,6 @@
 package nl.kmartin.knitster.feature.projectdetail
 
+import android.util.Log
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -11,9 +12,13 @@ import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalFocusManager
@@ -21,6 +26,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import kotlinx.coroutines.launch
 import nl.kmartin.knitster.data.model.Project
 import nl.kmartin.knitster.feature.projectdetail.component.ProjectDetailLastSaved
 import nl.kmartin.knitster.feature.projectdetail.component.ProjectDetailNotes
@@ -28,6 +34,7 @@ import nl.kmartin.knitster.feature.projectdetail.component.ProjectDetailRowCount
 import nl.kmartin.knitster.feature.projectdetail.component.ProjectDetailTitleSection
 import nl.kmartin.knitster.feature.projectdetail.component.ProjectDetailTopAppBar
 import nl.kmartin.knitster.theme.KnitsterDimensions
+import nl.kmartin.knitster.ui.component.ObserveSnackbarError
 import java.time.Instant
 
 /**
@@ -44,19 +51,19 @@ fun ProjectDetailScreen(
     onNavigateBack: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val snackbarHostState = remember { SnackbarHostState() }
 
-    // Consume the one-time navigation event.
-    LaunchedEffect(uiState.navigateBack) {
-        if (uiState.navigateBack) {
-            onNavigateBack()
-            viewModel.onNavigateBackHandled()
-        }
-    }
+    ObserveSnackbarError(
+        errorMessage = uiState.saveProjectErrorMsg,
+        snackbarHostState = snackbarHostState,
+        onErrorShown = viewModel::onSaveProjectErrorShown
+    )
 
     ProjectDetailContent(
         modifier = modifier,
         uiState = uiState,
-        onBackClick = viewModel::onBackClicked,
+        snackbarHostState = snackbarHostState,
+        onBackClick = onNavigateBack,
         onIncrementClick = viewModel::onIncrementRowCounter,
         onDecrementClick = viewModel::onDecrementRowCounter,
         projectNameState = viewModel.projectNameState,
@@ -69,6 +76,7 @@ fun ProjectDetailScreen(
  *
  * @param modifier Modifier to be applied to the root layout.
  * @param uiState Current UI state of the screen.
+ * @param snackbarHostState State used to display snackbar message.
  * @param onBackClick Called when the back button is clicked.
  * @param onIncrementClick Called when the row counter is incremented.
  * @param onDecrementClick Called when the row counter is decremented.
@@ -79,6 +87,7 @@ fun ProjectDetailScreen(
 fun ProjectDetailContent(
     modifier: Modifier = Modifier,
     uiState: ProjectDetailUiState,
+    snackbarHostState: SnackbarHostState,
     onBackClick: () -> Unit,
     onIncrementClick: () -> Unit,
     onDecrementClick: () -> Unit,
@@ -88,6 +97,9 @@ fun ProjectDetailContent(
     val focusManager = LocalFocusManager.current
 
     Scaffold(
+        snackbarHost = {
+            SnackbarHost(hostState = snackbarHostState)
+        },
         contentWindowInsets = WindowInsets.safeDrawing,
         modifier = modifier
             .fillMaxSize()
@@ -146,7 +158,6 @@ private fun ProjectDetailContentPreview() {
     ProjectDetailContent(
         uiState = ProjectDetailUiState(
             isLoadingProject = false,
-            navigateBack = false,
             project = Project(
                 id = 1,
                 name = "Blue winter sweater",
@@ -156,6 +167,7 @@ private fun ProjectDetailContentPreview() {
                 createdAt = Instant.parse("2026-07-23T14:30:00Z")
             ),
         ),
+        snackbarHostState = remember { SnackbarHostState() },
         onBackClick = {},
         onIncrementClick = {},
         onDecrementClick = {},

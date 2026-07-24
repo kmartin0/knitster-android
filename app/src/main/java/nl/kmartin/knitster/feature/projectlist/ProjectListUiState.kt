@@ -7,5 +7,6 @@ data class ProjectListUiState(
     val showEmptyState: Boolean = false,
     val isLoadingProjects: Boolean = false,
     val isCreatingProject: Boolean = false,
-    val navigateToProjectId: Long? = null
+    val navigateToProjectId: Long? = null,
+    val createProjectErrorMsg: String? = null
 )

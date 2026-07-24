@@ -8,5 +8,5 @@ import nl.kmartin.knitster.data.model.Project
 data class ProjectDetailUiState(
     val project: Project? = null,
     val isLoadingProject: Boolean = true,
-    val navigateBack: Boolean = false
+    val saveProjectErrorMsg: String? = null
 )

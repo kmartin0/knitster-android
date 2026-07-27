@@ -176,7 +176,8 @@ fun ProjectDetailContent(
             ) {
                 ProjectDetailTitleSection(
                     projectNameState = projectNameState,
-                    onProjectIconClick = {/* TODO: Open bottom sheet with icon picker */ }
+                    onProjectIconClick = {/* TODO: Open bottom sheet with icon picker */ },
+                    projectIcon = uiState.project.icon
                 )
                 ProjectDetailNotes(
                     projectNotesState = projectNotesState,

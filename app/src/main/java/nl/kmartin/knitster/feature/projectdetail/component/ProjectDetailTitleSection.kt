@@ -17,7 +17,7 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import nl.kmartin.knitster.R
+import nl.kmartin.knitster.data.model.ProjectIcon
 import nl.kmartin.knitster.ui.component.KnitsterIconButton
 import nl.kmartin.knitster.ui.component.KnitsterTextField
 
@@ -32,6 +32,7 @@ import nl.kmartin.knitster.ui.component.KnitsterTextField
 internal fun ProjectDetailTitleSection(
     modifier: Modifier = Modifier,
     projectNameState: TextFieldState,
+    projectIcon: ProjectIcon,
     onProjectIconClick: () -> Unit
 ) {
     val focusManager = LocalFocusManager.current
@@ -46,7 +47,7 @@ internal fun ProjectDetailTitleSection(
         KnitsterIconButton(
             modifier = Modifier.fillMaxHeight(),
             onClick = onProjectIconClick,
-            iconRes = R.drawable.ic_sweater,
+            iconRes = projectIcon.drawableRes,
             contentDescription = "Change project icon",
             iconSize = Modifier.fillMaxSize(0.8f)
         )
@@ -67,6 +68,7 @@ internal fun ProjectDetailTitleSection(
 private fun ProjectDetailTitleSectionPreview() {
     ProjectDetailTitleSection(
         projectNameState = TextFieldState(initialText = "Hello World"),
-        onProjectIconClick = {}
+        onProjectIconClick = {},
+        projectIcon = ProjectIcon.DEFAULT
     )
 }

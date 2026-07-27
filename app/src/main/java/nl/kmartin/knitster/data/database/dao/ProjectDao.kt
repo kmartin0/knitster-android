@@ -11,7 +11,7 @@ import nl.kmartin.knitster.data.database.entity.ProjectEntity
 
 @Dao
 interface ProjectDao {
-    @Query("SELECT * FROM projects")
+    @Query("SELECT * FROM projects ORDER BY lastSavedAt DESC")
     fun observeProjects(): Flow<List<ProjectEntity>>
 
     @Query("SELECT * FROM projects WHERE id = :projectId")

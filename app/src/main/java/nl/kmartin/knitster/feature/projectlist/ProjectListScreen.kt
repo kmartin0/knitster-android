@@ -5,7 +5,9 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -17,7 +19,10 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -43,6 +48,7 @@ fun ProjectListScreen(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
+    val projectListState = rememberLazyListState()
 
     ObserveCreatedProject(
         createdProjectId = uiState.createdProjectId,
@@ -56,12 +62,18 @@ fun ProjectListScreen(
         onErrorShown = viewModel::clearCreateProjectErrorMsg
     )
 
+    ObserveProjectListChanges(
+        projects = uiState.projects,
+        listState = projectListState,
+    )
+
     ProjectListContent(
         uiState = uiState,
         onCreateProjectClick = viewModel::createNewProject,
         onProjectClick = onNavigateToProjectDetail,
         snackbarHostState = snackbarHostState,
-        modifier = modifier
+        modifier = modifier,
+        projectListState = projectListState
     )
 }
 
@@ -74,6 +86,7 @@ private fun ProjectListContent(
     onCreateProjectClick: () -> Unit,
     onProjectClick: (Long) -> Unit,
     snackbarHostState: SnackbarHostState,
+    projectListState: LazyListState,
     modifier: Modifier = Modifier
 ) {
     Scaffold(
@@ -103,6 +116,7 @@ private fun ProjectListContent(
             ProjectList(
                 projects = uiState.projects,
                 onProjectClick = onProjectClick,
+                listState = projectListState
             )
         }
     }
@@ -162,10 +176,12 @@ private fun ProjectListTopAppBar(
 private fun ProjectList(
     projects: List<Project>,
     onProjectClick: (Long) -> Unit,
+    listState: LazyListState,
     modifier: Modifier = Modifier
 ) {
     LazyColumn(
         modifier = modifier,
+        state = listState,
         contentPadding = PaddingValues(KnitsterDimensions.ScreenPadding),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
@@ -192,6 +208,37 @@ private fun ProjectListEmptyState(
         modifier = modifier.padding(16.dp),
     ) {
         Text("No knitting project created")
+    }
+}
+
+/**
+ * Observes changes to the first project in the ordered list and scrolls the list
+ * back to the top when it changes.
+ *
+ * Projects are ordered by [Project.lastSavedAt], so a change to the first project
+ * indicates that a different project has become the most recently saved.
+ *
+ * @param projects Current ordered list of projects.
+ * @param listState State of the LazyColumn to scroll.
+ */
+@Composable
+private fun ObserveProjectListChanges(
+    projects: List<Project>,
+    listState: LazyListState,
+) {
+    var prevLastSavedProjectId by rememberSaveable { mutableStateOf<Long?>(null) }
+
+    LaunchedEffect(projects) {
+        if (projects.isEmpty()) {
+            prevLastSavedProjectId = null
+            return@LaunchedEffect
+        }
+
+        val curLastSavedProjectId = projects.first().id
+        if (curLastSavedProjectId != prevLastSavedProjectId) {
+            listState.animateScrollToItem(0)
+        }
+        prevLastSavedProjectId = curLastSavedProjectId
     }
 }
 
@@ -227,6 +274,7 @@ private fun ProjectListContentPreview() {
         ),
         onCreateProjectClick = {},
         onProjectClick = {},
-        snackbarHostState = remember { SnackbarHostState() }
+        snackbarHostState = remember { SnackbarHostState() },
+        projectListState = rememberLazyListState()
     )
 }

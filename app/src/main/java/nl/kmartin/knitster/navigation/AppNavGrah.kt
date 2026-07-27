@@ -31,7 +31,11 @@ fun NavGraphBuilder.appGraph(navController: NavHostController) {
 
     composable<ProjectDetailDestination> {
         ProjectDetailScreen(
-            onNavigateBack = { navController.popBackStack() }
+            onNavigateBack = {
+                navController.popBackStack<ProjectListDestination>(
+                    inclusive = false
+                )
+            }
         )
     }
 }

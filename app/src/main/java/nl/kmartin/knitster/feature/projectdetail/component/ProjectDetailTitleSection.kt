@@ -1,7 +1,6 @@
 package nl.kmartin.knitster.feature.projectdetail.component
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -40,7 +39,7 @@ internal fun ProjectDetailTitleSection(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .height(IntrinsicSize.Max),
+            .height(64.dp),
         horizontalArrangement = Arrangement.spacedBy(12.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -49,10 +48,10 @@ internal fun ProjectDetailTitleSection(
             onClick = onProjectIconClick,
             iconRes = projectIcon.drawableRes,
             contentDescription = "Change project icon",
-            iconSize = Modifier.fillMaxSize(0.8f)
+            iconSize = Modifier.fillMaxSize()
         )
         KnitsterTextField(
-            modifier = Modifier.weight(1f),
+            modifier = Modifier.weight(1f).fillMaxSize(),
             state = projectNameState,
             placeholder = "Project name",
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),

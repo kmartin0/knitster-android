@@ -42,7 +42,7 @@ fun KnitsterIconButton(
     contentDescription: String,
     shape: Shape = KnitsterBorder.Shape,
     border: Modifier = Modifier.knitsterBorder(shape = shape),
-    tint: Color = Color.Black,
+    tint: Color = Color.Unspecified,
     iconSize: Modifier = Modifier.fillMaxSize(0.9f)
 ) {
     Box(

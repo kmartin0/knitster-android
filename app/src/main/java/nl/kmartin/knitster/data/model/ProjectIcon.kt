@@ -7,15 +7,15 @@ enum class ProjectIcon(
     val id: String,
     @param:DrawableRes val drawableRes: Int
 ) {
-    SWEATER("sweater", R.drawable.ic_sweater),
-    CHEVRON("chevron", R.drawable.ic_chevron_forward),
-    ARROW_BACK("arrow_back", R.drawable.ic_arrow_back),
-    ADD("add", R.drawable.ic_add),
-    REMOVE("remove", R.drawable.ic_remove),
-    MORE_VERT("more_vert", R.drawable.ic_more_vert),;
+    KNITTING("knitting", R.drawable.ic_knitting_sketch),
+    SWEATER("sweater", R.drawable.ic_sweater_sketch),
+    DRESS("dress", R.drawable.ic_dress_sketch),
+    PANTS("pants", R.drawable.ic_pants_sketch),
+    SOCKS("socks", R.drawable.ic_socks_sketch),
+    BEANIE("beanie", R.drawable.ic_beanie_sketch);
 
     companion object {
-        val DEFAULT = SWEATER
+        val DEFAULT = KNITTING
 
         fun fromId(id: String): ProjectIcon {
             return entries.firstOrNull { it.id == id } ?: DEFAULT

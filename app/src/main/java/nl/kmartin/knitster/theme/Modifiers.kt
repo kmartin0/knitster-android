@@ -5,7 +5,9 @@ import androidx.compose.foundation.border
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.unit.Dp
 
 /**
  * Applies the app's default border styling to this modifier.
@@ -14,10 +16,14 @@ import androidx.compose.ui.graphics.Shape
  * [MaterialTheme].
  */
 @Composable
-fun Modifier.knitsterBorder(shape: Shape = MaterialTheme.shapes.medium): Modifier {
+fun Modifier.knitsterBorder(
+    width: Dp = KnitsterBorder.Width,
+    color: Color = KnitsterBorder.BorderColor,
+    shape: Shape = KnitsterBorder.Shape
+): Modifier {
     return this
         .border(
-            border = BorderStroke(KnitsterBorder.Width, KnitsterBorder.BorderColor),
+            border = BorderStroke(width, color),
             shape = shape,
         )
 }

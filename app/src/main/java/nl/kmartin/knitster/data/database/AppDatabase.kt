@@ -4,14 +4,15 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import nl.kmartin.knitster.data.database.converter.InstantConverter
+import nl.kmartin.knitster.data.database.converter.ProjectIconConverter
 import nl.kmartin.knitster.data.database.dao.ProjectDao
 import nl.kmartin.knitster.data.database.entity.ProjectEntity
 
 @Database(
     entities = [ProjectEntity::class],
-    version = 1
+    version = 2
 )
-@TypeConverters(InstantConverter::class)
+@TypeConverters(InstantConverter::class, ProjectIconConverter::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun projectDao(): ProjectDao
 }

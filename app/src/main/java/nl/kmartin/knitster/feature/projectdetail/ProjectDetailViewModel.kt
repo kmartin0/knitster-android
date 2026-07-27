@@ -18,6 +18,7 @@ import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import nl.kmartin.knitster.data.model.Project
+import nl.kmartin.knitster.data.model.ProjectIcon
 import nl.kmartin.knitster.data.repository.ProjectRepository
 import nl.kmartin.knitster.navigation.ProjectDetailDestination
 import javax.inject.Inject
@@ -143,6 +144,14 @@ class ProjectDetailViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    /**
+     * Updates the project icon for a project.
+     */
+    fun updateProjectIcon(newIcon: ProjectIcon) {
+        val currentProject = _uiState.value.project ?: return
+        saveProject(currentProject.copy(icon = newIcon))
     }
 
     /**

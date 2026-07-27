@@ -38,6 +38,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import nl.kmartin.knitster.data.model.Project
+import nl.kmartin.knitster.data.model.ProjectIcon
+import nl.kmartin.knitster.feature.projectdetail.component.ProjectDetailIconPickerBottomSheet
 import nl.kmartin.knitster.feature.projectdetail.component.ProjectDetailLastSaved
 import nl.kmartin.knitster.feature.projectdetail.component.ProjectDetailNotes
 import nl.kmartin.knitster.feature.projectdetail.component.ProjectDetailRowCounter
@@ -62,9 +64,8 @@ fun ProjectDetailScreen(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
-    var showDeleteProjectDialog by rememberSaveable {
-        mutableStateOf(false)
-    }
+    var showDeleteProjectDialog by rememberSaveable { mutableStateOf(false) }
+    var showIconPicker by rememberSaveable { mutableStateOf(false) }
 
     ObserveSnackbarError(
         errorMessage = uiState.saveProjectErrorMsg,
@@ -101,6 +102,16 @@ fun ProjectDetailScreen(
         )
     }
 
+    if (showIconPicker) {
+        ProjectDetailIconPickerBottomSheet(
+            onDismiss = { showIconPicker = false },
+            onIconSelected = { selectedIcon ->
+                viewModel.updateProjectIcon(selectedIcon)
+            },
+            currentIcon = uiState.project?.icon ?: ProjectIcon.DEFAULT
+        )
+    }
+
     ProjectDetailContent(
         modifier = modifier,
         uiState = uiState,
@@ -110,6 +121,7 @@ fun ProjectDetailScreen(
         onResetCounterClick = viewModel::resetRowCounter,
         onIncrementClick = viewModel::incrementRowCounter,
         onDecrementClick = viewModel::decrementRowCounter,
+        onProjectIconClick = { showIconPicker = true },
         projectNameState = viewModel.projectNameState,
         projectNotesState = viewModel.projectNotesState,
     )
@@ -139,6 +151,7 @@ fun ProjectDetailContent(
     onResetCounterClick: () -> Unit,
     onIncrementClick: () -> Unit,
     onDecrementClick: () -> Unit,
+    onProjectIconClick: () -> Unit,
     projectNameState: TextFieldState,
     projectNotesState: TextFieldState
 ) {
@@ -176,7 +189,7 @@ fun ProjectDetailContent(
             ) {
                 ProjectDetailTitleSection(
                     projectNameState = projectNameState,
-                    onProjectIconClick = {/* TODO: Open bottom sheet with icon picker */ },
+                    onProjectIconClick = onProjectIconClick,
                     projectIcon = uiState.project.icon
                 )
                 ProjectDetailNotes(
@@ -300,6 +313,7 @@ private fun ProjectDetailContentPreview() {
         onResetCounterClick = {},
         onIncrementClick = {},
         onDecrementClick = {},
+        onProjectIconClick = {},
         projectNameState = rememberTextFieldState(
             initialText = "Blue winter sweater",
         ),

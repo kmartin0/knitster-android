@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -31,6 +30,7 @@ import nl.kmartin.knitster.theme.knitsterBorder
  * @param iconRes Resource ID of the icon to display.
  * @param contentDescription Description of the button for accessibility.
  * @param shape Shape of the button and its border.
+ * @param border The border of the icon button.
  * @param tint Tint applied to the icon.
  * @param iconSize Modifier applied to the icon.
  */
@@ -40,7 +40,8 @@ fun KnitsterIconButton(
     onClick: () -> Unit,
     iconRes: Int,
     contentDescription: String,
-    shape: Shape = MaterialTheme.shapes.medium,
+    shape: Shape = KnitsterBorder.Shape,
+    border: Modifier = Modifier.knitsterBorder(shape = shape),
     tint: Color = Color.Black,
     iconSize: Modifier = Modifier.fillMaxSize(0.9f)
 ) {
@@ -48,7 +49,7 @@ fun KnitsterIconButton(
         modifier = modifier
             .aspectRatio(1f)
             .clip(shape)
-            .knitsterBorder(shape = shape)
+            .then(border)
             .clickable(
                 onClick = onClick,
                 role = Role.Button,

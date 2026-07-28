@@ -44,7 +44,7 @@ internal fun ProjectDetailRowCounter(
     ) {
         Text(
             text = "Row Counter",
-            style = MaterialTheme.typography.titleMedium
+            style = MaterialTheme.typography.titleLarge
         )
 
         Row(
@@ -100,7 +100,7 @@ private fun CounterButton(
             iconSize = Modifier.fillMaxSize(0.5f),
             onClick = onClick,
             iconRes = iconRes,
-            contentDescription = contentDescription,
+            contentDescription = contentDescription
         )
     }
 }

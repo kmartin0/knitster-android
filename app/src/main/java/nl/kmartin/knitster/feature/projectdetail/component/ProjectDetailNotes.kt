@@ -30,12 +30,12 @@ internal fun ProjectDetailNotes(
     ) {
         Text(
             text = "Notes",
-            style = MaterialTheme.typography.titleMedium,
+            style = MaterialTheme.typography.titleLarge
         )
         KnitsterTextField(
             modifier = Modifier.fillMaxSize(),
             state = projectNotesState,
-            lineLimits = TextFieldLineLimits.MultiLine(),
+            lineLimits = TextFieldLineLimits.MultiLine()
         )
     }
 }

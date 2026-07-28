@@ -1,5 +1,6 @@
 package nl.kmartin.knitster.feature.projectlist
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -18,7 +19,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -26,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import nl.kmartin.knitster.R
 import nl.kmartin.knitster.data.model.Project
 import nl.kmartin.knitster.data.model.ProjectIcon
+import nl.kmartin.knitster.theme.KnitsterBorder
 import nl.kmartin.knitster.theme.knitsterBorder
 import nl.kmartin.knitster.util.toFormattedLastSavedString
 import java.time.Instant
@@ -42,7 +44,8 @@ fun ProjectCard(
             .height(100.dp)
             .knitsterBorder(),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.background
+            containerColor = MaterialTheme.colorScheme.surface,
+            contentColor = MaterialTheme.colorScheme.onSurface
         )
     ) {
         Row(
@@ -66,16 +69,20 @@ fun ProjectCard(
 @Composable
 private fun ProjectCardIcon(iconRes: Int) {
     Box(
-        modifier = Modifier.fillMaxHeight(),
+        modifier = Modifier
+            .fillMaxHeight(0.8f)
+            .aspectRatio(1f)
+            .clip(KnitsterBorder.Shape)
+            .background(MaterialTheme.colorScheme.surfaceContainer),
         contentAlignment = Alignment.Center,
     ) {
         Icon(
             modifier = Modifier
-                .fillMaxHeight(0.65f)
+                .fillMaxHeight(0.9f)
                 .aspectRatio(1f),
             painter = painterResource(iconRes),
             contentDescription = null,
-            tint = Color.Unspecified
+            tint = MaterialTheme.colorScheme.primary
         )
     }
 }
@@ -119,8 +126,7 @@ private fun ProjectCardChevron(
                 .fillMaxHeight(0.4f)
                 .aspectRatio(1f),
             painter = painterResource(R.drawable.ic_chevron_forward),
-            contentDescription = null,
-            tint = Color.Unspecified
+            contentDescription = null
         )
     }
 }

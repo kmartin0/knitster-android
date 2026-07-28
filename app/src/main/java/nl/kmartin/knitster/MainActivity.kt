@@ -19,9 +19,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         // Draw behind the system bars.
-        enableEdgeToEdge(
-            statusBarStyle = SystemBarStyle.light(Color.TRANSPARENT, Color.TRANSPARENT)
-        )
+        enableEdgeToEdge()
 
         // Create the root Compose hierarchy, applying the app theme.
         setContent {

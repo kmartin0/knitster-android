@@ -1,6 +1,5 @@
 package nl.kmartin.knitster.feature.projectdetail.component
 
-import android.R
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -148,7 +147,7 @@ private fun IconPickerItem(
             contentDescription = icon.id,
             border = Modifier.knitsterBorder(
                 width = if (isSelected) KnitsterBorder.Width * 2 else KnitsterBorder.Width
-            ),
+            )
         )
     }
 }

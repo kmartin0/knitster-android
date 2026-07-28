@@ -1,5 +1,6 @@
 package nl.kmartin.knitster.ui.component
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
@@ -43,6 +44,7 @@ fun KnitsterTextField(
     onKeyboardAction: KeyboardActionHandler? = null,
     textStyle: TextStyle = MaterialTheme.typography.bodyLarge,
     textColor: Color = MaterialTheme.colorScheme.onSurface,
+    backgroundColor: Color = MaterialTheme.colorScheme.surfaceContainer,
     placeholderColor: Color = MaterialTheme.colorScheme.onSurfaceVariant,
 ) {
     val isSingleLine = lineLimits == TextFieldLineLimits.SingleLine
@@ -53,6 +55,7 @@ fun KnitsterTextField(
         modifier = modifier
             .fillMaxWidth()
             .knitsterBorder()
+            .background(color = backgroundColor)
             .then(if (isSingleLine) Modifier.heightIn(min = 64.dp) else Modifier),
         lineLimits = lineLimits,
         keyboardOptions = keyboardOptions,

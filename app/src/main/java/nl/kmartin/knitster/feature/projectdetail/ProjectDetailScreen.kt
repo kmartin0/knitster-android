@@ -192,9 +192,12 @@ fun ProjectDetailContent(
                     onProjectIconClick = onProjectIconClick,
                     projectIcon = uiState.project.icon
                 )
+                Spacer(
+                    modifier = Modifier.weight(0.05f)
+                )
                 ProjectDetailNotes(
                     projectNotesState = projectNotesState,
-                    modifier = Modifier.weight(0.9f)
+                    modifier = Modifier.weight(0.85f)
                 )
                 Spacer(
                     modifier = Modifier.weight(0.05f)

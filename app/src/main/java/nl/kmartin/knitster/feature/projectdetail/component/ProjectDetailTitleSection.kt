@@ -48,7 +48,8 @@ internal fun ProjectDetailTitleSection(
             onClick = onProjectIconClick,
             iconRes = projectIcon.drawableRes,
             contentDescription = "Change project icon",
-            iconSize = Modifier.fillMaxSize()
+            iconSize = Modifier.fillMaxSize(),
+            tint = MaterialTheme.colorScheme.onSurface
         )
         KnitsterTextField(
             modifier = Modifier.weight(1f).fillMaxSize(),

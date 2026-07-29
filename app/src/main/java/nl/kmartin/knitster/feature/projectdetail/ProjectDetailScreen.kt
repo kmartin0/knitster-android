@@ -45,7 +45,7 @@ import nl.kmartin.knitster.feature.projectdetail.component.ProjectDetailNotes
 import nl.kmartin.knitster.feature.projectdetail.component.ProjectDetailRowCounter
 import nl.kmartin.knitster.feature.projectdetail.component.ProjectDetailTitleSection
 import nl.kmartin.knitster.feature.projectdetail.component.ProjectDetailTopAppBar
-import nl.kmartin.knitster.theme.KnitsterDimensions
+import nl.kmartin.knitster.theme.Dimensions
 import nl.kmartin.knitster.ui.component.ObserveSnackbarError
 import java.time.Instant
 
@@ -184,7 +184,7 @@ fun ProjectDetailContent(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(innerPadding)
-                    .padding(all = KnitsterDimensions.ScreenPadding),
+                    .padding(all = Dimensions.ScreenPadding),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 ProjectDetailTitleSection(

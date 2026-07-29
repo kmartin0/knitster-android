@@ -58,6 +58,12 @@ dependencies {
     // --- Navigation ---
     implementation(libs.androidx.navigation.compose)
 
+    // --- Splashscreen ---
+    implementation(libs.androidx.core.splashscreen)
+
+    // --- Datastore ---
+    implementation(libs.androidx.datastore.preferences)
+
     // --- Hilt ---
     ksp(libs.dagger.hilt.android.compiler)
     implementation(libs.dagger.hilt.android)

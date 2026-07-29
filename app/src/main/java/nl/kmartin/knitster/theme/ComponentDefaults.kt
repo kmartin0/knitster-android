@@ -12,7 +12,7 @@ import androidx.compose.runtime.Composable
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun KnitsterTopAppBarColors(): TopAppBarColors = TopAppBarDefaults.topAppBarColors(
+fun knitsterTopAppBarColors(): TopAppBarColors = TopAppBarDefaults.topAppBarColors(
     containerColor = MaterialTheme.colorScheme.background,
     navigationIconContentColor = MaterialTheme.colorScheme.onBackground,
     actionIconContentColor = MaterialTheme.colorScheme.onBackground,

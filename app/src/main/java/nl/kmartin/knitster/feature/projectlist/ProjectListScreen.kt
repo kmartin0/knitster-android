@@ -11,6 +11,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -32,9 +33,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import nl.kmartin.knitster.R
 import nl.kmartin.knitster.data.model.Project
 import nl.kmartin.knitster.data.model.ProjectIcon
+import nl.kmartin.knitster.theme.Dimensions
 import nl.kmartin.knitster.theme.KnitsterBorder
-import nl.kmartin.knitster.theme.KnitsterDimensions
-import nl.kmartin.knitster.theme.KnitsterTopAppBarColors
+import nl.kmartin.knitster.theme.knitsterTopAppBarColors
 import nl.kmartin.knitster.ui.component.AppBarCircularProgressIndicator
 import nl.kmartin.knitster.ui.component.ObserveSnackbarError
 import java.time.Instant
@@ -51,6 +52,7 @@ fun ProjectListScreen(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
     val projectListState = rememberLazyListState()
+    var showSettingsBottomSheet by rememberSaveable { mutableStateOf(false) }
 
     ObserveCreatedProject(
         createdProjectId = uiState.createdProjectId,
@@ -64,15 +66,32 @@ fun ProjectListScreen(
         onErrorShown = viewModel::clearCreateProjectErrorMsg
     )
 
+    ObserveSnackbarError(
+        errorMessage = uiState.settingsErrorMsg,
+        snackbarHostState = snackbarHostState,
+        onErrorShown = viewModel::clearSettingsErrorMsg
+    )
+
     ObserveProjectListChanges(
         projects = uiState.projects,
         listState = projectListState,
     )
 
+    if (showSettingsBottomSheet) {
+        ProjectListSettingsBottomSheet(
+            currentThemeColor = uiState.themeColor,
+            currentThemeMode = uiState.themeMode,
+            onThemeColorSelected = viewModel::setThemeColor,
+            onThemeModeSelected = viewModel::setThemeMode,
+            onDismiss = { showSettingsBottomSheet = false }
+        )
+    }
+
     ProjectListContent(
         uiState = uiState,
         onCreateProjectClick = viewModel::createNewProject,
         onProjectClick = onNavigateToProjectDetail,
+        onSettingsClick = { showSettingsBottomSheet = true },
         snackbarHostState = snackbarHostState,
         modifier = modifier,
         projectListState = projectListState
@@ -86,6 +105,7 @@ fun ProjectListScreen(
 private fun ProjectListContent(
     uiState: ProjectListUiState,
     onCreateProjectClick: () -> Unit,
+    onSettingsClick: () -> Unit,
     onProjectClick: (Long) -> Unit,
     snackbarHostState: SnackbarHostState,
     projectListState: LazyListState,
@@ -99,6 +119,7 @@ private fun ProjectListContent(
         topBar = {
             ProjectListTopAppBar(
                 onCreateProjectClick = onCreateProjectClick,
+                onSettingsClick = onSettingsClick,
                 isLoading = uiState.isLoadingProjects || uiState.isCreatingProject
             )
         }
@@ -148,6 +169,7 @@ private fun ObserveCreatedProject(
 @Composable
 private fun ProjectListTopAppBar(
     onCreateProjectClick: () -> Unit,
+    onSettingsClick: () -> Unit,
     isLoading: Boolean
 ) {
     TopAppBar(
@@ -156,9 +178,17 @@ private fun ProjectListTopAppBar(
                 text = "My knits"
             )
         },
-        colors = KnitsterTopAppBarColors(),
+        colors = knitsterTopAppBarColors(),
         actions = {
             if (isLoading) AppBarCircularProgressIndicator()
+            IconButton(
+                onClick = onSettingsClick
+            ) {
+                Icon(
+                    painter = painterResource(R.drawable.ic_settings),
+                    contentDescription = "Settings"
+                )
+            }
             FilledTonalIconButton(
                 onClick = onCreateProjectClick,
                 enabled = !isLoading,
@@ -186,7 +216,7 @@ private fun ProjectList(
     LazyColumn(
         modifier = modifier,
         state = listState,
-        contentPadding = PaddingValues(KnitsterDimensions.ScreenPadding),
+        contentPadding = PaddingValues(Dimensions.ScreenPadding),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         items(
@@ -278,6 +308,7 @@ private fun ProjectListContentPreview() {
         ),
         onCreateProjectClick = {},
         onProjectClick = {},
+        onSettingsClick = {},
         snackbarHostState = remember { SnackbarHostState() },
         projectListState = rememberLazyListState()
     )

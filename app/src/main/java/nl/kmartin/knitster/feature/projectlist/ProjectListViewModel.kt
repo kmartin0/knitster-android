@@ -10,6 +10,9 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import nl.kmartin.knitster.data.repository.ProjectRepository
+import nl.kmartin.knitster.data.repository.ThemeRepository
+import nl.kmartin.knitster.theme.ThemeColor
+import nl.kmartin.knitster.theme.ThemeMode
 import javax.inject.Inject
 import kotlin.coroutines.cancellation.CancellationException
 
@@ -17,7 +20,8 @@ private const val TAG = "ProjectListViewModel"
 
 @HiltViewModel
 class ProjectListViewModel @Inject constructor(
-    private val projectRepository: ProjectRepository
+    private val projectRepository: ProjectRepository,
+    private val themeRepository: ThemeRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(ProjectListUiState(isLoadingProjects = true))
@@ -25,6 +29,8 @@ class ProjectListViewModel @Inject constructor(
 
     init {
         observeProjects()
+        observeThemeMode()
+        observeThemeColor()
     }
 
     /**
@@ -70,6 +76,42 @@ class ProjectListViewModel @Inject constructor(
         _uiState.update { it.copy(createdProjectId = null) }
     }
 
+    fun setThemeColor(newThemeColor: ThemeColor) {
+        viewModelScope.launch {
+            try {
+                themeRepository.setThemeColor(newThemeColor)
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                Log.e(TAG, "Failed to save theme colour", e)
+
+                _uiState.update {
+                    it.copy(settingsErrorMsg = "Couldn't update theme colour.")
+                }
+            }
+        }
+    }
+
+    fun setThemeMode(newThemeMode: ThemeMode) {
+        viewModelScope.launch {
+            try {
+                themeRepository.setThemeMode(newThemeMode)
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                Log.e(TAG, "Failed to save theme mode", e)
+
+                _uiState.update {
+                    it.copy(settingsErrorMsg = "Couldn't update theme mode.")
+                }
+            }
+        }
+    }
+
+    fun clearSettingsErrorMsg() {
+        _uiState.update { it.copy(settingsErrorMsg = null) }
+    }
+
     /**
      * Observes projects from the repository and updates the UI state.
      */
@@ -82,6 +124,32 @@ class ProjectListViewModel @Inject constructor(
                         showEmptyState = projects.isEmpty(),
                         isLoadingProjects = false
                     )
+                }
+            }
+        }
+    }
+
+    /**
+     * Observes theme color from the repository and updates the UI state.
+     */
+    private fun observeThemeColor() {
+        viewModelScope.launch {
+            themeRepository.observeThemeColor.collect { themeColor ->
+                _uiState.update {
+                    it.copy(themeColor = themeColor)
+                }
+            }
+        }
+    }
+
+    /**
+     * Observes theme mode from the repository and updates the UI state.
+     */
+    private fun observeThemeMode() {
+        viewModelScope.launch {
+            themeRepository.observeThemeMode.collect { themeMode ->
+                _uiState.update {
+                    it.copy(themeMode = themeMode)
                 }
             }
         }

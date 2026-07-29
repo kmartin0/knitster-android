@@ -3,12 +3,10 @@ package nl.kmartin.knitster.feature.projectdetail.component
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
@@ -24,8 +22,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 import nl.kmartin.knitster.data.model.ProjectIcon
+import nl.kmartin.knitster.theme.Dimensions
 import nl.kmartin.knitster.theme.KnitsterBorder
-import nl.kmartin.knitster.theme.KnitsterDimensions
 import nl.kmartin.knitster.theme.knitsterBorder
 import nl.kmartin.knitster.ui.component.KnitsterIconButton
 
@@ -63,7 +61,9 @@ internal fun ProjectDetailIconPickerBottomSheet(
         Column(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.padding(KnitsterDimensions.ScreenPadding)
+            modifier = Modifier
+                .padding(Dimensions.ScreenPadding)
+                .fillMaxWidth()
         ) {
             Text(
                 text = "Choose project icon",
@@ -99,20 +99,17 @@ private fun IconPickerGrid(
     selectedIcon: ProjectIcon,
     onIconSelected: (ProjectIcon) -> Unit,
 ) {
-    LazyVerticalGrid(
-        columns = GridCells.Fixed(3), // 3 columns, matching your mockup
+    FlowRow(
+        modifier = Modifier.padding(16.dp),
         horizontalArrangement = Arrangement.spacedBy(12.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp),
-        contentPadding = PaddingValues(16.dp),
+        maxItemsInEachRow = 3
     ) {
-        items(
-            items = ProjectIcon.entries,
-            key = { it.id },
-        ) { icon ->
+        ProjectIcon.entries.forEach { icon ->
             IconPickerItem(
                 icon = icon,
                 isSelected = icon == selectedIcon,
-                onClick = { onIconSelected(icon) },
+                onClick = { onIconSelected(icon) }
             )
         }
     }

@@ -17,7 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import nl.kmartin.knitster.R
-import nl.kmartin.knitster.theme.KnitsterTopAppBarColors
+import nl.kmartin.knitster.theme.knitsterTopAppBarColors
 import nl.kmartin.knitster.ui.component.AppBarCircularProgressIndicator
 
 /**
@@ -38,7 +38,7 @@ internal fun ProjectDetailTopAppBar(
 ) {
     TopAppBar(
         modifier = modifier,
-        colors = KnitsterTopAppBarColors(),
+        colors = knitsterTopAppBarColors(),
         navigationIcon = {
             IconButton(onClick = onBackClick) {
                 Icon(

@@ -6,8 +6,8 @@ enum class ThemeColor(
 ) {
     CREAM("cream", "Cream"),
     GREEN("green", "Green"),
-    LAVENDER("lavender", "Lavender"),
-    RUST("rust", "Rust");
+    BLUE("blue", "Blue"),
+    PINK("pink", "Pink");
 
     companion object {
         val DEFAULT = CREAM

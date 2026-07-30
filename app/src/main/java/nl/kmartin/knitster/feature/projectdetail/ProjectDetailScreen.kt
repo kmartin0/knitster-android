@@ -192,24 +192,18 @@ fun ProjectDetailContent(
                     onProjectIconClick = onProjectIconClick,
                     projectIcon = uiState.project.icon
                 )
-                Spacer(
-                    modifier = Modifier.weight(0.05f)
-                )
+                Spacer(modifier = Modifier.weight(0.025f))
                 ProjectDetailNotes(
+                    modifier = Modifier.weight(0.925f),
                     projectNotesState = projectNotesState,
-                    modifier = Modifier.weight(0.85f)
                 )
-                Spacer(
-                    modifier = Modifier.weight(0.05f)
-                )
+                Spacer(modifier = Modifier.weight(0.025f))
                 ProjectDetailRowCounter(
                     rowCount = uiState.project.rowCount,
                     onIncrementClick = onIncrementClick,
                     onDecrementClick = onDecrementClick,
                 )
-                Spacer(
-                    modifier = Modifier.weight(0.05f)
-                )
+                Spacer(modifier = Modifier.weight(0.025f))
                 ProjectDetailLastSaved(
                     lastSavedAt = uiState.project.lastSavedAt
                 )

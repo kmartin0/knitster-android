@@ -7,14 +7,14 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import nl.kmartin.knitster.theme.color.BlueDarkScheme
+import nl.kmartin.knitster.theme.color.BlueLightScheme
 import nl.kmartin.knitster.theme.color.CreamDarkScheme
 import nl.kmartin.knitster.theme.color.CreamLightScheme
 import nl.kmartin.knitster.theme.color.GreenDarkScheme
 import nl.kmartin.knitster.theme.color.GreenLightScheme
-import nl.kmartin.knitster.theme.color.LavenderDarkScheme
-import nl.kmartin.knitster.theme.color.LavenderLightScheme
-import nl.kmartin.knitster.theme.color.RustDarkScheme
-import nl.kmartin.knitster.theme.color.RustLightScheme
+import nl.kmartin.knitster.theme.color.PinkDarkScheme
+import nl.kmartin.knitster.theme.color.PinkLightScheme
 
 @Composable
 fun KnitsterTheme(
@@ -43,7 +43,7 @@ fun colorSchemeFor(themeColor: ThemeColor, isDarkMode: Boolean): ColorScheme {
     return when (themeColor) {
         ThemeColor.CREAM -> if (isDarkMode) CreamDarkScheme else CreamLightScheme
         ThemeColor.GREEN -> if (isDarkMode) GreenDarkScheme else GreenLightScheme
-        ThemeColor.LAVENDER -> if (isDarkMode) LavenderDarkScheme else LavenderLightScheme
-        ThemeColor.RUST -> if (isDarkMode) RustDarkScheme else RustLightScheme
+        ThemeColor.BLUE -> if (isDarkMode) BlueDarkScheme else BlueLightScheme
+        ThemeColor.PINK -> if (isDarkMode) PinkDarkScheme else PinkLightScheme
     }
 }

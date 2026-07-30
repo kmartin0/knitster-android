@@ -1,13 +1,16 @@
 package nl.kmartin.knitster.feature.projectdetail.component
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilledIconButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
@@ -17,7 +20,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
@@ -25,7 +28,6 @@ import nl.kmartin.knitster.data.model.ProjectIcon
 import nl.kmartin.knitster.theme.Dimensions
 import nl.kmartin.knitster.theme.KnitsterBorder
 import nl.kmartin.knitster.theme.knitsterBorder
-import nl.kmartin.knitster.ui.component.KnitsterIconButton
 
 /**
  * Displays a bottom sheet for selecting a project icon.
@@ -100,9 +102,14 @@ private fun IconPickerGrid(
     onIconSelected: (ProjectIcon) -> Unit,
 ) {
     FlowRow(
-        modifier = Modifier.padding(16.dp),
-        horizontalArrangement = Arrangement.spacedBy(12.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        horizontalArrangement = Arrangement.spacedBy(
+            space = 24.dp,
+            alignment = Alignment.CenterHorizontally
+        ),
+        verticalArrangement = Arrangement.spacedBy(24.dp),
         maxItemsInEachRow = 3
     ) {
         ProjectIcon.entries.forEach { icon ->
@@ -128,23 +135,21 @@ private fun IconPickerItem(
     isSelected: Boolean,
     onClick: () -> Unit,
 ) {
-    Column(
+    FilledIconButton(
         modifier = Modifier
-            .clip(MaterialTheme.shapes.medium)
-            .clickable(onClick = onClick)
-            .padding(12.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(8.dp),
+            .knitsterBorder(width = if (isSelected) KnitsterBorder.Width * 2 else KnitsterBorder.Width)
+            .size(64.dp)
+            .aspectRatio(1f),
+        onClick = onClick,
+        shape = KnitsterBorder.Shape,
+        colors = IconButtonDefaults.filledIconButtonColors(
+            containerColor = MaterialTheme.colorScheme.surfaceContainer,
+            contentColor = MaterialTheme.colorScheme.primary
+        )
     ) {
-        KnitsterIconButton(
-            modifier = Modifier
-                .size(64.dp),
-            onClick = onClick,
-            iconRes = icon.drawableRes,
-            contentDescription = icon.id,
-            border = Modifier.knitsterBorder(
-                width = if (isSelected) KnitsterBorder.Width * 2 else KnitsterBorder.Width
-            )
+        Icon(
+            painter = painterResource(icon.drawableRes),
+            contentDescription = null
         )
     }
 }

@@ -4,19 +4,27 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.FilledIconButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import nl.kmartin.knitster.R
-import nl.kmartin.knitster.ui.component.KnitsterIconButton
+import nl.kmartin.knitster.theme.KnitsterBorder
+import nl.kmartin.knitster.theme.KnitsterShapes
 
 /**
  * Height of the increment and decrement buttons in the row counter.
@@ -38,40 +46,51 @@ internal fun ProjectDetailRowCounter(
     onDecrementClick: () -> Unit,
     rowCount: Int
 ) {
-    Column(
-        modifier = modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(12.dp)
+    Surface(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(KnitsterBorder.Shape),
+        color = MaterialTheme.colorScheme.surfaceContainer,
+        contentColor = MaterialTheme.colorScheme.onSurface,
     ) {
-        Text(
-            text = "Row Counter",
-            style = MaterialTheme.typography.titleLarge
-        )
-
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(16.dp),
-            verticalAlignment = Alignment.CenterVertically,
+        Column(
+            modifier = Modifier.padding(24.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            CounterButton(
-                modifier = Modifier.weight(1f),
-                onClick = onDecrementClick,
-                iconRes = R.drawable.ic_remove,
-                contentDescription = "Decrement"
-            )
-
             Text(
-                text = "$rowCount",
-                style = MaterialTheme.typography.displayMedium,
-                modifier = Modifier.weight(1f),
-                textAlign = TextAlign.Center
+                text = "Row Counter",
+                style = MaterialTheme.typography.titleLarge
             )
 
-            CounterButton(
-                modifier = Modifier.weight(1f),
-                onClick = onIncrementClick,
-                iconRes = R.drawable.ic_add,
-                contentDescription = "Increment"
-            )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                CounterButton(
+                    modifier = Modifier.weight(1f),
+                    onClick = onDecrementClick,
+                    iconRes = R.drawable.ic_remove,
+                    contentDescription = "Decrement"
+                )
+
+                Text(
+                    text = "$rowCount",
+                    style = MaterialTheme.typography.displayMedium.copy(
+                        fontWeight = FontWeight.Bold
+                    ),
+                    modifier = Modifier.weight(1f),
+                    textAlign = TextAlign.Center
+                )
+
+                CounterButton(
+                    modifier = Modifier.weight(1f),
+                    onClick = onIncrementClick,
+                    iconRes = R.drawable.ic_add,
+                    contentDescription = "Increment"
+                )
+            }
         }
     }
 }
@@ -95,18 +114,23 @@ private fun CounterButton(
         modifier = modifier,
         contentAlignment = Alignment.Center,
     ) {
-        KnitsterIconButton(
-            modifier = Modifier.height(CounterButtonHeight),
-            iconSize = Modifier.fillMaxSize(0.5f),
+        FilledIconButton(
+            modifier = Modifier
+                .height(CounterButtonHeight)
+                .aspectRatio(1f),
             onClick = onClick,
-            iconRes = iconRes,
-            contentDescription = contentDescription
-        )
+            shape = KnitsterShapes.large
+        ) {
+            Icon(
+                painter = painterResource(iconRes),
+                contentDescription = contentDescription
+            )
+        }
     }
 }
 
 // --- Preview ---
-@Preview(showBackground = true)
+@Preview(showBackground = true, heightDp = 200)
 @Composable
 private fun PreviewProjectDetailRowCounter() {
     ProjectDetailRowCounter(

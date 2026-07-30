@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.text.input.KeyboardActionHandler
@@ -45,10 +46,11 @@ fun KnitsterTextField(
     textStyle: TextStyle = MaterialTheme.typography.bodyLarge,
     textColor: Color = MaterialTheme.colorScheme.onSurface,
     backgroundColor: Color = MaterialTheme.colorScheme.surfaceContainer,
-    placeholderColor: Color = MaterialTheme.colorScheme.onSurfaceVariant,
+    placeholderColor: Color = MaterialTheme.colorScheme.onSurfaceVariant
 ) {
     val isSingleLine = lineLimits == TextFieldLineLimits.SingleLine
     val boxAlignment = if (isSingleLine) Alignment.CenterStart else Alignment.TopStart
+    val scrollState = rememberScrollState()
 
     BasicTextField(
         state = state,
@@ -76,5 +78,6 @@ fun KnitsterTextField(
                 innerTextField()
             }
         },
+        scrollState = scrollState
     )
 }

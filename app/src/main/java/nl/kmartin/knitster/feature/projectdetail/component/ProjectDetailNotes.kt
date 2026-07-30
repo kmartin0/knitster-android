@@ -2,7 +2,6 @@ package nl.kmartin.knitster.feature.projectdetail.component
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.text.input.TextFieldLineLimits
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.material3.MaterialTheme
@@ -33,9 +32,10 @@ internal fun ProjectDetailNotes(
             style = MaterialTheme.typography.titleLarge
         )
         KnitsterTextField(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier.weight(1f),
             state = projectNotesState,
-            lineLimits = TextFieldLineLimits.MultiLine()
+            lineLimits = TextFieldLineLimits.MultiLine(),
+            placeholder = "Enter your notes here..."
         )
     }
 }

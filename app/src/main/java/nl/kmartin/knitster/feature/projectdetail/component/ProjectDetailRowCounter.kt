@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -21,6 +22,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import nl.kmartin.knitster.R
 import nl.kmartin.knitster.theme.KnitsterBorder
@@ -29,7 +31,7 @@ import nl.kmartin.knitster.theme.KnitsterShapes
 /**
  * Height of the increment and decrement buttons in the row counter.
  */
-private val CounterButtonHeight = 84.dp
+private val CounterButtonHeight = 48.dp
 
 /**
  * Displays a row counter with increment and decrement controls.
@@ -42,10 +44,19 @@ private val CounterButtonHeight = 84.dp
 @Composable
 internal fun ProjectDetailRowCounter(
     modifier: Modifier = Modifier,
+    compact: Boolean = false,
     onIncrementClick: () -> Unit,
     onDecrementClick: () -> Unit,
     rowCount: Int
 ) {
+    val counterTextStyle = if (compact) {
+        MaterialTheme.typography.displaySmall
+    } else {
+        MaterialTheme.typography.displayMedium
+    }
+
+    val counterButtonSize = if (compact) 48.dp else 84.dp
+
     Surface(
         modifier = Modifier
             .fillMaxWidth()
@@ -54,14 +65,16 @@ internal fun ProjectDetailRowCounter(
         contentColor = MaterialTheme.colorScheme.onSurface,
     ) {
         Column(
-            modifier = Modifier.padding(24.dp),
+            modifier = Modifier.padding(if(compact) 12.dp else 24.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(
-                text = "Row Counter",
-                style = MaterialTheme.typography.titleLarge
-            )
+            if (!compact) {
+                Text(
+                    text = "Row Counter",
+                    style = MaterialTheme.typography.titleLarge
+                )
+            }
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -71,13 +84,14 @@ internal fun ProjectDetailRowCounter(
                 CounterButton(
                     modifier = Modifier.weight(1f),
                     onClick = onDecrementClick,
+                    size = counterButtonSize,
                     iconRes = R.drawable.ic_remove,
                     contentDescription = "Decrement"
                 )
 
                 Text(
                     text = "$rowCount",
-                    style = MaterialTheme.typography.displayMedium.copy(
+                    style = counterTextStyle.copy(
                         fontWeight = FontWeight.Bold
                     ),
                     modifier = Modifier.weight(1f),
@@ -87,6 +101,7 @@ internal fun ProjectDetailRowCounter(
                 CounterButton(
                     modifier = Modifier.weight(1f),
                     onClick = onIncrementClick,
+                    size = counterButtonSize,
                     iconRes = R.drawable.ic_add,
                     contentDescription = "Increment"
                 )
@@ -108,6 +123,7 @@ private fun CounterButton(
     modifier: Modifier = Modifier,
     onClick: () -> Unit,
     iconRes: Int,
+    size: Dp,
     contentDescription: String,
 ) {
     Box(
@@ -116,7 +132,7 @@ private fun CounterButton(
     ) {
         FilledIconButton(
             modifier = Modifier
-                .height(CounterButtonHeight)
+                .size(size)
                 .aspectRatio(1f),
             onClick = onClick,
             shape = KnitsterShapes.large

@@ -1,15 +1,25 @@
 package nl.kmartin.knitster.feature.projectdetail
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.FastOutLinearInEasing
+import androidx.compose.animation.core.LinearOutSlowInEasing
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.isImeVisible
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.foundation.text.input.rememberTextFieldState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
@@ -25,6 +35,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalFocusManager
@@ -48,6 +59,8 @@ import nl.kmartin.knitster.feature.projectdetail.component.ProjectDetailTopAppBa
 import nl.kmartin.knitster.theme.Dimensions
 import nl.kmartin.knitster.ui.component.ObserveSnackbarError
 import java.time.Instant
+
+private val minimumRegularContentHeight = 310.dp
 
 /**
  * Displays the project detail screen and connects it to the [ProjectDetailViewModel].
@@ -141,6 +154,7 @@ fun ProjectDetailScreen(
  * @param projectNameState State backing the project name text field.
  * @param projectNotesState State backing the project notes text field.
  */
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun ProjectDetailContent(
     modifier: Modifier = Modifier,
@@ -180,33 +194,59 @@ fun ProjectDetailContent(
         }
     ) { innerPadding ->
         if (!uiState.isLoadingProject && uiState.project != null) {
-            Column(
+            val isKeyboardVisible = WindowInsets.isImeVisible
+            BoxWithConstraints(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(innerPadding)
-                    .padding(all = Dimensions.ScreenPadding),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
+                    .padding(Dimensions.ScreenPadding)
             ) {
-                ProjectDetailTitleSection(
-                    projectNameState = projectNameState,
-                    onProjectIconClick = onProjectIconClick,
-                    projectIcon = uiState.project.icon
-                )
-                Spacer(modifier = Modifier.weight(0.025f))
-                ProjectDetailNotes(
-                    modifier = Modifier.weight(0.925f),
-                    projectNotesState = projectNotesState,
-                )
-                Spacer(modifier = Modifier.weight(0.025f))
-                ProjectDetailRowCounter(
-                    rowCount = uiState.project.rowCount,
-                    onIncrementClick = onIncrementClick,
-                    onDecrementClick = onDecrementClick,
-                )
-                Spacer(modifier = Modifier.weight(0.025f))
-                ProjectDetailLastSaved(
-                    lastSavedAt = uiState.project.lastSavedAt
-                )
+                val isCompact = maxHeight < minimumRegularContentHeight
+
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .verticalScroll(rememberScrollState()),
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    ProjectDetailTitleSection(
+                        projectNameState = projectNameState,
+                        onProjectIconClick = onProjectIconClick,
+                        projectIcon = uiState.project.icon
+                    )
+                    ProjectDetailNotes(
+                        modifier = Modifier
+                            .then(if (!isCompact) Modifier.weight(1f) else Modifier),
+                        projectNotesState = projectNotesState,
+                    )
+                    AnimatedVisibility(
+                        visible = !isKeyboardVisible,
+                        enter = expandVertically(
+                            expandFrom = Alignment.Bottom,
+                            animationSpec = tween(
+                                durationMillis = 300,
+                                easing = LinearOutSlowInEasing
+                            )
+                        ),
+                        exit = shrinkVertically(
+                            shrinkTowards = Alignment.Bottom,
+                            animationSpec = tween(
+                                durationMillis = 300,
+                                easing = FastOutLinearInEasing
+                            )
+                        )
+                    ) {
+                        ProjectDetailRowCounter(
+                            rowCount = uiState.project.rowCount,
+                            onIncrementClick = onIncrementClick,
+                            onDecrementClick = onDecrementClick,
+                            compact = isCompact
+                        )
+                    }
+                    ProjectDetailLastSaved(
+                        lastSavedAt = uiState.project.lastSavedAt
+                    )
+                }
             }
         }
     }

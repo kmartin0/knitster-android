@@ -5,6 +5,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
@@ -15,6 +16,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.visible
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -30,6 +34,7 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import nl.kmartin.knitster.R
 import nl.kmartin.knitster.theme.Dimensions
@@ -39,6 +44,15 @@ import nl.kmartin.knitster.theme.ThemeMode
 import nl.kmartin.knitster.theme.colorSchemeFor
 import nl.kmartin.knitster.theme.knitsterBorder
 import nl.kmartin.knitster.theme.resolveDarkTheme
+
+/** Minimum number of columns in the theme color grid. */
+private const val themeColorGridMinColumns = 4
+
+/** Maximum width of a theme color grid item. */
+private val themeColorGridMaxItemWidth = 92.dp
+
+/** Spacing between theme color grid items. */
+private val themeColorGridItemSpacing = 8.dp
 
 /**
  * Displays a bottom sheet that allows the user to customize the application's
@@ -68,7 +82,9 @@ fun ProjectListSettingsBottomSheet(
         sheetState = sheetState
     ) {
         Column(
-            modifier = Modifier.padding(Dimensions.ScreenPadding),
+            modifier = Modifier
+                .padding(Dimensions.ScreenPadding)
+                .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(24.dp)
         ) {
             ThemeColorPickerGrid(
@@ -109,25 +125,97 @@ private fun ThemeColorPickerGrid(
             text = "Colour Theme",
             style = MaterialTheme.typography.titleLarge
         )
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(IntrinsicSize.Min),
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-        ) {
-            ThemeColor.entries.forEach { themeColor ->
-                ThemeColorItem(
-                    modifier = Modifier
-                        .weight(1f)
-                        .fillMaxHeight(),
-                    themeColor = themeColor,
-                    isDarkMode = isDarkMode,
-                    isSelected = themeColor == currentThemeColor,
-                    onClick = { onThemeColorSelected(themeColor) }
-                )
+        ThemeColorGrid(
+            themeColors = ThemeColor.entries,
+            currentThemeColor = currentThemeColor,
+            isDarkMode = isDarkMode,
+            onThemeColorSelected = onThemeColorSelected
+        )
+    }
+}
+
+/**
+ * Displays the available color themes in a responsive, non-lazy grid.
+ *
+ * The grid is at least [themeColorGridMinColumns] columns wide and adds
+ * additional columns as the available width increases. Each item grows to
+ * fill the available space but never exceeds [themeColorGridMaxItemWidth].
+ *
+ * @param themeColors Theme colors to display.
+ * @param currentThemeColor Currently selected color theme.
+ * @param isDarkMode Whether items should be previewed using the dark color scheme.
+ * @param onThemeColorSelected Called when a color theme is selected.
+ */
+@Composable
+private fun ThemeColorGrid(
+    themeColors: List<ThemeColor>,
+    currentThemeColor: ThemeColor,
+    isDarkMode: Boolean,
+    onThemeColorSelected: (ThemeColor) -> Unit
+) {
+    BoxWithConstraints(modifier = Modifier.fillMaxWidth()) {
+        val columns = themeColorGridColumnsFor(maxWidth)
+        val itemWidth = themeColorGridItemWidthFor(maxWidth, columns)
+
+        Column(verticalArrangement = Arrangement.spacedBy(themeColorGridItemSpacing)) {
+            themeColors.chunked(columns).forEach { rowThemeColors ->
+                Row(
+                    modifier = Modifier.height(IntrinsicSize.Min),
+                    horizontalArrangement = Arrangement.spacedBy(themeColorGridItemSpacing),
+                ) {
+                    rowThemeColors.forEach { themeColor ->
+                        ThemeColorItem(
+                            modifier = Modifier
+                                .width(itemWidth)
+                                .fillMaxHeight(),
+                            themeColor = themeColor,
+                            isDarkMode = isDarkMode,
+                            isSelected = themeColor == currentThemeColor,
+                            onClick = { onThemeColorSelected(themeColor) }
+                        )
+                    }
+                }
             }
         }
     }
+}
+
+/**
+ * Returns the number of columns that fit within the available width.
+ *
+ * The grid is guaranteed to contain at least [themeColorGridMinColumns] columns.
+ * Additional columns are added whenever another target-sized item can fit.
+ *
+ * @param availableWidth Width available to the grid.
+ * @return Number of columns to display.
+ */
+private fun themeColorGridColumnsFor(
+    availableWidth: Dp
+): Int {
+    val columnWidth = themeColorGridMaxItemWidth + themeColorGridItemSpacing
+
+    val columns = ((availableWidth + themeColorGridItemSpacing) / columnWidth).toInt()
+
+    return columns.coerceAtLeast(themeColorGridMinColumns)
+}
+
+/**
+ * Returns the width that each grid item should occupy.
+ * The returned width never exceeds [themeColorGridMaxItemWidth].
+ *
+ * @param availableWidth Width available to the grid.
+ * @param columns Number of columns in the grid.
+ * @return Width to assign to each grid item.
+ */
+private fun themeColorGridItemWidthFor(
+    availableWidth: Dp,
+    columns: Int
+): Dp {
+    val totalSpacing = themeColorGridItemSpacing * (columns - 1)
+
+    val availableItemWidth = (availableWidth - totalSpacing) / columns
+
+    return availableItemWidth.coerceAtMost(themeColorGridMaxItemWidth)
 }
 
 /**

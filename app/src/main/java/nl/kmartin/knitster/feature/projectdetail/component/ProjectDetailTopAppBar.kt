@@ -33,7 +33,6 @@ internal fun ProjectDetailTopAppBar(
     modifier: Modifier = Modifier,
     onBackClick: () -> Unit,
     onDeleteClick: () -> Unit,
-    onResetCounterClick: () -> Unit,
     isLoading: Boolean
 ) {
     TopAppBar(
@@ -52,8 +51,7 @@ internal fun ProjectDetailTopAppBar(
             if (isLoading) AppBarCircularProgressIndicator()
 
             ProjectDetailOverflowMenu(
-                onDeleteClick = onDeleteClick,
-                onResetCounterClick = onResetCounterClick
+                onDeleteClick = onDeleteClick
             )
         }
     )
@@ -61,8 +59,7 @@ internal fun ProjectDetailTopAppBar(
 
 @Composable
 private fun ProjectDetailOverflowMenu(
-    onDeleteClick: () -> Unit,
-    onResetCounterClick: () -> Unit
+    onDeleteClick: () -> Unit
 ) {
     var showMenu by remember { mutableStateOf(false) }
 
@@ -85,13 +82,6 @@ private fun ProjectDetailOverflowMenu(
                     onDeleteClick()
                 },
             )
-            DropdownMenuItem(
-                text = { Text("Reset Counter") },
-                onClick = {
-                    showMenu = false
-                    onResetCounterClick()
-                },
-            )
         }
     }
 }
@@ -103,7 +93,6 @@ private fun ProjectDetailTopAppBarPreview() {
     ProjectDetailTopAppBar(
         onBackClick = {},
         onDeleteClick = {},
-        onResetCounterClick = {},
         isLoading = false
     )
 }

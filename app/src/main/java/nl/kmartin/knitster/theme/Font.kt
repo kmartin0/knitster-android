@@ -8,10 +8,25 @@ import androidx.compose.ui.text.font.FontWeight
 import nl.kmartin.knitster.R
 
 @OptIn(ExperimentalTextApi::class)
-fun quicksandVariable(weight: FontWeight): FontFamily = FontFamily(
+val baloo2Variable: FontFamily = FontFamily(
     Font(
-        R.font.quicksand_variable,
-        weight = weight,
-        variationSettings = FontVariation.Settings(FontVariation.weight(weight.weight)),
-    )
+        R.font.baloo_2_variable,
+        weight = FontWeight.Normal,
+        variationSettings = FontVariation.Settings(FontVariation.weight(400)),
+    ),
+    Font(
+        R.font.baloo_2_variable,
+        weight = FontWeight.Medium,
+        variationSettings = FontVariation.Settings(FontVariation.weight(500)),
+    ),
+    Font(
+        R.font.baloo_2_variable,
+        weight = FontWeight(525),
+        variationSettings = FontVariation.Settings(FontVariation.weight(525)),
+    ),
+    Font(
+        R.font.baloo_2_variable,
+        weight = FontWeight.Bold,
+        variationSettings = FontVariation.Settings(FontVariation.weight(700)),
+    ),
 )

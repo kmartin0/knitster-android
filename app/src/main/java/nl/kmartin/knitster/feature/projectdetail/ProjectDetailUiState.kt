@@ -10,6 +10,11 @@ data class ProjectDetailUiState(
     val isLoadingProject: Boolean = true,
     val saveProjectErrorMsg: String? = null,
     val deleteProjectErrorMsg: String? = null,
-    val rowCountBeforeReset: Int? = null,
+    val undoResetRowCounter: UndoResetRowCounter? = null,
     val projectDeleted: Boolean = false
+)
+
+data class UndoResetRowCounter(
+    val rowCounterId: Long,
+    val previousCount: Int
 )

@@ -23,13 +23,9 @@ private fun Typography.withFontFamily(fontFamily: FontFamily): Typography = copy
     labelSmall = labelSmall.copy(fontFamily = fontFamily),
 )
 
-val Typography = Typography()
-    .withFontFamily(quicksandVariable(FontWeight.Normal))
-    .copy(
-        titleLarge = Typography().titleLarge.copy(
-            fontFamily = quicksandVariable(FontWeight.SemiBold)
-        ),
-        bodyLarge = Typography().bodyLarge.copy(
-            fontSize = 18.sp
-        )
-    )
+private val base = Typography().withFontFamily(baloo2Variable)
+
+val Typography = base.copy(
+    titleLarge = base.titleLarge.copy(fontWeight = FontWeight(525)),
+    bodyLarge = base.bodyLarge.copy(fontSize = 18.sp)
+)

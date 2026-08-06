@@ -8,7 +8,7 @@ data class Project(
     val name: String = "",
     val icon: ProjectIcon = ProjectIcon.DEFAULT,
     val notes: String = "",
-    val rowCount: Int = 0,
+    val rowCounters: List<RowCounter> = emptyList(),
     val lastSavedAt: Instant,
     val createdAt: Instant
 )

@@ -18,8 +18,8 @@ android {
         applicationId = "nl.kmartin.knitster"
         minSdk = 26
         targetSdk = 37
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = 2
+        versionName = "1.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -40,6 +40,12 @@ android {
     buildFeatures {
         compose = true
     }
+
+    sourceSets {
+        getByName("androidTest") {
+            assets.directories.add("$projectDir/schemas")
+        }
+    }
 }
 
 ksp {
@@ -51,6 +57,9 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
+
+    // --- Kotlinx Serialization Runtime ---
+    implementation(libs.kotlinx.serialization.json)
 
     // --- Jetpack Compose ---
     implementation(platform(libs.androidx.compose.bom))
@@ -87,4 +96,5 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.ui.test.junit4)
+    androidTestImplementation(libs.androidx.room.testing)
 }

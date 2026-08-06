@@ -19,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.unit.dp
 import nl.kmartin.knitster.theme.knitsterBorder
 
@@ -41,7 +42,7 @@ fun KnitsterTextField(
     state: TextFieldState,
     placeholder: String = "",
     lineLimits: TextFieldLineLimits = TextFieldLineLimits.SingleLine,
-    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+    keyboardOptions: KeyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Sentences),
     onKeyboardAction: KeyboardActionHandler? = null,
     textStyle: TextStyle = MaterialTheme.typography.bodyLarge,
     textColor: Color = MaterialTheme.colorScheme.onSurface,

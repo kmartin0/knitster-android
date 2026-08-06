@@ -12,7 +12,6 @@ data class ProjectEntity(
     val name: String = "",
     val icon: ProjectIcon = ProjectIcon.DEFAULT,
     val notes: String = "",
-    val rowCount: Int = 0,
     val lastSavedAt: Instant,
     val createdAt: Instant
 )

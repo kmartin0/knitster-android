@@ -3,10 +3,15 @@ package nl.kmartin.knitster.feature.projectdetail.component
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.Icon
@@ -57,15 +62,19 @@ internal fun ProjectDetailIconPickerBottomSheet(
     }
 
     ModalBottomSheet(
+        modifier = Modifier
+            .statusBarsPadding()
+            .navigationBarsPadding(),
         onDismissRequest = onDismiss,
-        sheetState = sheetState
+        sheetState = sheetState,
+        contentWindowInsets = { WindowInsets(0.dp) }
     ) {
         Column(
-            verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
-                .padding(Dimensions.ScreenPadding)
                 .fillMaxWidth()
+                .verticalScroll(rememberScrollState())
+                .padding(Dimensions.ScreenPadding)
         ) {
             Text(
                 text = "Choose project icon",

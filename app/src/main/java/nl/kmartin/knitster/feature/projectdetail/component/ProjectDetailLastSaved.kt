@@ -6,6 +6,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import nl.kmartin.knitster.util.toFormattedLastSavedString
 import java.time.Instant
@@ -25,8 +26,12 @@ internal fun ProjectDetailLastSaved(
         modifier = modifier.fillMaxWidth(),
         text = "Last saved: ${lastSavedAt.toFormattedLastSavedString()}",
         textAlign = TextAlign.Center,
-        style = MaterialTheme.typography.labelLarge,
-        color = MaterialTheme.colorScheme.onSurfaceVariant
+        style = MaterialTheme.typography.labelLarge.copy(
+            fontFeatureSettings = "tnum"
+        ),
+        color = MaterialTheme.colorScheme.onSurfaceVariant,
+        maxLines = 1,
+        overflow = TextOverflow.Ellipsis,
     )
 }
 

@@ -9,6 +9,8 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import nl.kmartin.knitster.data.database.AppDatabase
 import nl.kmartin.knitster.data.database.dao.ProjectDao
+import nl.kmartin.knitster.data.database.dao.RowCounterDao
+import nl.kmartin.knitster.data.database.migration.MIGRATION_2_3
 import javax.inject.Singleton
 
 /**
@@ -34,7 +36,12 @@ object DatabaseModule {
             klass = AppDatabase::class.java,
             name = DATABASE_NAME
         )
-            .fallbackToDestructiveMigration(dropAllTables = true)
+            .addMigrations(MIGRATION_2_3)
+            .fallbackToDestructiveMigrationFrom(
+                dropAllTables = true,
+                startVersions = intArrayOf(1)
+            )
+            .fallbackToDestructiveMigrationOnDowngrade(dropAllTables = true)
             .build()
     }
 
@@ -47,5 +54,16 @@ object DatabaseModule {
     @Provides
     fun provideProjectDao(database: AppDatabase): ProjectDao {
         return database.projectDao()
+    }
+
+    /**
+     * Provides the [RowCounterDao] for accessing project row counters.
+     *
+     * @param database The application's Room database.
+     * @return The [RowCounterDao] instance.
+     */
+    @Provides
+    fun provideRowCounterDao(database: AppDatabase): RowCounterDao {
+        return database.rowCounterDao()
     }
 }

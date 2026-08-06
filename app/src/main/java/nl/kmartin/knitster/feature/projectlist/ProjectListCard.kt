@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.TextAutoSize
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -24,9 +25,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import nl.kmartin.knitster.R
 import nl.kmartin.knitster.data.model.Project
 import nl.kmartin.knitster.data.model.ProjectIcon
+import nl.kmartin.knitster.data.model.RowCounter
 import nl.kmartin.knitster.theme.KnitsterBorder
 import nl.kmartin.knitster.theme.knitsterBorder
 import nl.kmartin.knitster.util.toFormattedLastSavedString
@@ -34,12 +37,13 @@ import java.time.Instant
 
 @Composable
 fun ProjectCard(
+    modifier: Modifier = Modifier,
     project: Project,
     onClick: () -> Unit
 ) {
     Card(
         onClick = onClick,
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .height(100.dp)
             .knitsterBorder(),
@@ -98,17 +102,30 @@ private fun ProjectCardInfo(
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         Text(
+            modifier = Modifier.fillMaxWidth(),
             text = name,
             style = MaterialTheme.typography.titleLarge,
-            maxLines = 2,
             overflow = TextOverflow.Ellipsis,
+            autoSize = TextAutoSize.StepBased(
+                minFontSize = MaterialTheme.typography.titleSmall.fontSize,
+                maxFontSize = MaterialTheme.typography.titleLarge.fontSize,
+                stepSize = 1.sp
+            ),
+            maxLines = 1
         )
         Text(
             text = "Last saved: ${lastSavedAt.toFormattedLastSavedString()}",
-            style = MaterialTheme.typography.labelMedium,
+            style = MaterialTheme.typography.labelMedium.copy(
+                fontFeatureSettings = "tnum"
+            ),
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
+            autoSize = TextAutoSize.StepBased(
+                minFontSize = MaterialTheme.typography.labelSmall.fontSize,
+                maxFontSize = MaterialTheme.typography.labelMedium.fontSize,
+                stepSize = 1.sp
+            ),
         )
     }
 }
@@ -141,7 +158,7 @@ private fun ProjectCardPreview() {
             name = "Cosy Sweater",
             icon = ProjectIcon.DEFAULT,
             notes = "Very cosy",
-            rowCount = 0,
+            rowCounters = listOf(RowCounter(1, "Row Counter", 42)),
             lastSavedAt = Instant.now(),
             createdAt = Instant.now()
         ),

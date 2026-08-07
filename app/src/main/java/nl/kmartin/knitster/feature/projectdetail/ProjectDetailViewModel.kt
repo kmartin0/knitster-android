@@ -16,11 +16,13 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import nl.kmartin.knitster.R
 import nl.kmartin.knitster.data.model.Project
 import nl.kmartin.knitster.data.model.ProjectIcon
 import nl.kmartin.knitster.data.model.RowCounter
 import nl.kmartin.knitster.data.repository.ProjectRepository
 import nl.kmartin.knitster.navigation.ProjectDetailDestination
+import nl.kmartin.knitster.ui.UiText
 import javax.inject.Inject
 import kotlin.coroutines.cancellation.CancellationException
 import kotlin.time.Duration.Companion.milliseconds
@@ -268,7 +270,11 @@ class ProjectDetailViewModel @Inject constructor(
                 Log.e(TAG, "Failed to delete project ${currentProject.id}", e)
 
                 _uiState.update {
-                    it.copy(deleteProjectErrorMsg = "Failed to delete the project.")
+                    it.copy(
+                        deleteProjectErrorMsg = UiText.Resource(
+                            R.string.error_delete_project
+                        )
+                    )
                 }
             }
         }
@@ -398,7 +404,11 @@ class ProjectDetailViewModel @Inject constructor(
                 Log.e(TAG, "Failed operation for project $projectId", e)
 
                 _uiState.update {
-                    it.copy(saveProjectErrorMsg = "Failed saving the update.")
+                    it.copy(
+                        saveProjectErrorMsg = UiText.Resource(
+                            R.string.error_save_project
+                        )
+                    )
                 }
             }
         }

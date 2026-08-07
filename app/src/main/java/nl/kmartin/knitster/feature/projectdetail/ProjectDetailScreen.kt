@@ -11,8 +11,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import nl.kmartin.knitster.R
 import nl.kmartin.knitster.data.model.ProjectIcon
 import nl.kmartin.knitster.data.model.RowCounter
 import nl.kmartin.knitster.feature.projectdetail.component.ProjectDetailDeleteProjectDialog
@@ -20,6 +22,8 @@ import nl.kmartin.knitster.feature.projectdetail.component.ProjectDetailDeleteRo
 import nl.kmartin.knitster.feature.projectdetail.component.ProjectDetailIconPickerBottomSheet
 import nl.kmartin.knitster.feature.projectdetail.component.ProjectDetailRowCounterFormBottomSheet
 import nl.kmartin.knitster.ui.component.ObserveSnackbarError
+import nl.kmartin.knitster.ui.toDisplayString
+import nl.kmartin.knitster.ui.toDisplayStringOrNull
 
 /**
  * Displays the project detail screen and connects it to the [ProjectDetailViewModel].
@@ -46,13 +50,13 @@ fun ProjectDetailScreen(
     val pendingDeleteRowCounter = uiState.findRowCounter(pendingDeleteRowCounterId)
 
     ObserveSnackbarError(
-        errorMessage = uiState.saveProjectErrorMsg,
+        errorMessage = uiState.saveProjectErrorMsg.toDisplayStringOrNull(),
         snackbarHostState = snackbarHostState,
         onErrorShown = viewModel::clearSaveProjectErrorShown
     )
 
     ObserveSnackbarError(
-        errorMessage = uiState.deleteProjectErrorMsg,
+        errorMessage = uiState.deleteProjectErrorMsg.toDisplayStringOrNull(),
         snackbarHostState = snackbarHostState,
         onErrorShown = viewModel::clearDeleteProjectErrorMsg
     )
@@ -95,7 +99,7 @@ fun ProjectDetailScreen(
 
     pendingEditRowCounter?.let { rowCounter ->
         ProjectDetailRowCounterFormBottomSheet(
-            title = "Edit Counter",
+            title = stringResource(R.string.edit_counter),
             rowCounter = rowCounter,
             onDismiss = {
                 pendingEditRowCounterId = null
@@ -109,7 +113,7 @@ fun ProjectDetailScreen(
 
     if (showAddRowCounterBottomSheet) {
         ProjectDetailRowCounterFormBottomSheet(
-            title = "Add Counter",
+            title = stringResource(R.string.add_counter),
             rowCounter = RowCounter(),
             onDismiss = {
                 showAddRowCounterBottomSheet = false
@@ -164,12 +168,21 @@ private fun ObserveResetRowCounterUndo(
     onUndo: () -> Unit,
     onDismiss: () -> Unit,
 ) {
+    val message = undoResetRowCounter?.let {
+        stringResource(
+            R.string.row_counter_reset_from,
+            it.previousCount
+        )
+    }
+
+    val undoLabel = stringResource(R.string.undo)
+
     LaunchedEffect(undoResetRowCounter) {
-        if (undoResetRowCounter != null) {
+        if (message != null) {
             when (
                 snackbarHostState.showSnackbar(
-                    message = "Row counter reset from: ${undoResetRowCounter.previousCount}",
-                    actionLabel = "Undo",
+                    message = message,
+                    actionLabel = undoLabel,
                     duration = SnackbarDuration.Short,
                 )
             ) {

@@ -28,6 +28,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -37,6 +38,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import nl.kmartin.knitster.R
 import nl.kmartin.knitster.data.model.RowCounter
+import nl.kmartin.knitster.theme.FontFeatures
 import nl.kmartin.knitster.theme.KnitsterBorder
 import nl.kmartin.knitster.theme.KnitsterShapes
 import java.text.NumberFormat
@@ -70,7 +72,8 @@ internal fun ProjectDetailRowCounterSection(
     val itemShape = KnitsterBorder.Shape
 
     Column(
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier
+            .fillMaxWidth()
             .animateContentSize(),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
@@ -82,7 +85,7 @@ internal fun ProjectDetailRowCounterSection(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = "Counters",
+                text = stringResource(R.string.counters),
                 style = MaterialTheme.typography.titleLarge
             )
             FilledTonalIconButton(
@@ -90,7 +93,7 @@ internal fun ProjectDetailRowCounterSection(
             ) {
                 Icon(
                     painter = painterResource(R.drawable.ic_add),
-                    contentDescription = "Add"
+                    contentDescription = stringResource(R.string.add_counter)
                 )
             }
         }
@@ -169,7 +172,7 @@ private fun RowCounterItem(
                 IconButton(onClick = { menuExpanded = true }) {
                     Icon(
                         painter = painterResource(R.drawable.ic_more_vert),
-                        contentDescription = "Row counter options"
+                        contentDescription = stringResource(R.string.row_counter_options)
                     )
                 }
 
@@ -191,7 +194,7 @@ private fun RowCounterItem(
                 onClick = { onDecrementClick(rowCounter.id) },
                 size = counterButtonSize,
                 iconRes = R.drawable.ic_remove,
-                contentDescription = "Decrement"
+                contentDescription = stringResource(R.string.decrement_counter)
             )
 
             Text(
@@ -205,7 +208,7 @@ private fun RowCounterItem(
                 },
                 style = MaterialTheme.typography.displayMedium.copy(
                     fontWeight = FontWeight.Bold,
-                    fontFeatureSettings = "tnum"
+                    fontFeatureSettings = FontFeatures.TABULAR_NUMS
                 ),
                 modifier = Modifier.weight(1f),
                 textAlign = TextAlign.Center,
@@ -223,7 +226,7 @@ private fun RowCounterItem(
                 onClick = { onIncrementClick(rowCounter.id) },
                 size = counterButtonSize,
                 iconRes = R.drawable.ic_add,
-                contentDescription = "Increment"
+                contentDescription = stringResource(R.string.increment_counter)
             )
         }
     }
@@ -284,7 +287,7 @@ private fun RowCounterItemOverFlowMenu(
         IconButton(onClick = { showMenu = true }) {
             Icon(
                 painter = painterResource(R.drawable.ic_more_vert),
-                contentDescription = "More options"
+                contentDescription = stringResource(R.string.more_options)
             )
         }
 
@@ -293,21 +296,21 @@ private fun RowCounterItemOverFlowMenu(
             onDismissRequest = { showMenu = false },
         ) {
             DropdownMenuItem(
-                text = { Text("Reset Counter") },
+                text = { Text(stringResource(R.string.reset_counter)) },
                 onClick = {
                     showMenu = false
                     onResetClick()
                 },
             )
             DropdownMenuItem(
-                text = { Text("Edit Counter") },
+                text = { Text(stringResource(R.string.edit_counter)) },
                 onClick = {
                     showMenu = false
                     onEditClick()
                 },
             )
             DropdownMenuItem(
-                text = { Text("Delete Counter") },
+                text = { Text(stringResource(R.string.delete_counter)) },
                 onClick = {
                     showMenu = false
                     onDeleteClick()

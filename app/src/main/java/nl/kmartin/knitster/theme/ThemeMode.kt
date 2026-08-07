@@ -1,16 +1,29 @@
 package nl.kmartin.knitster.theme
 
 import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
 import nl.kmartin.knitster.R
 
 enum class ThemeMode(
     val id: String,
-    val displayName: String,
+    @param:StringRes val displayNameRes: Int,
     @param:DrawableRes val drawableRes: Int
 ) {
-    SYSTEM("system_default", "System default", R.drawable.ic_dark_mode_system),
-    LIGHT("light", "Light", R.drawable.ic_light_mode),
-    DARK("dark", "Dark", R.drawable.ic_dark_mode);
+    SYSTEM(
+        id = "system_default",
+        displayNameRes = R.string.theme_mode_system_default,
+        drawableRes = R.drawable.ic_brightness_auto
+    ),
+    LIGHT(
+        id = "light",
+        displayNameRes = R.string.theme_mode_light,
+        drawableRes = R.drawable.ic_brightness_light
+    ),
+    DARK(
+        id = "dark",
+        displayNameRes = R.string.theme_mode_dark,
+        drawableRes = R.drawable.ic_brightness_dark
+    );
 
     companion object {
         val DEFAULT = SYSTEM

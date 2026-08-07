@@ -33,6 +33,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -129,7 +130,7 @@ private fun ThemeColorPickerGrid(
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         Text(
-            text = "Colour Theme",
+            text = stringResource(R.string.settings_colour_theme),
             style = MaterialTheme.typography.titleLarge
         )
         ThemeColorGrid(
@@ -254,7 +255,7 @@ private fun ThemeColorItem(
             .clickable(
                 onClick = onClick,
                 role = Role.RadioButton,
-                onClickLabel = themeColor.displayName,
+                onClickLabel = stringResource(themeColor.displayNameRes),
                 indication = null,
                 interactionSource = remember { MutableInteractionSource() },
             )
@@ -280,7 +281,7 @@ private fun ThemeColorItem(
             tint = previewScheme.onPrimaryContainer
         )
         Text(
-            text = themeColor.displayName,
+            text = stringResource(themeColor.displayNameRes),
             color = previewScheme.onPrimaryContainer,
             textAlign = TextAlign.Center,
             maxLines = 2,
@@ -308,7 +309,7 @@ private fun ThemeModeGrid(
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         Text(
-            text = "Brightness",
+            text = stringResource(R.string.settings_brightness),
             style = MaterialTheme.typography.titleLarge
         )
         ThemeMode.entries.forEach { themeMode ->
@@ -348,7 +349,7 @@ private fun ThemeModeItem(
             .clickable(
                 onClick = onClick,
                 role = Role.RadioButton,
-                onClickLabel = themeMode.displayName,
+                onClickLabel = stringResource(themeMode.displayNameRes),
                 indication = null,
                 interactionSource = remember { MutableInteractionSource() },
             ),
@@ -361,7 +362,7 @@ private fun ThemeModeItem(
             tint = MaterialTheme.colorScheme.primary
         )
         Text(
-            text = themeMode.displayName,
+            text = stringResource(themeMode.displayNameRes),
             style = MaterialTheme.typography.titleMedium
         )
         Spacer(modifier = Modifier.weight(1f))

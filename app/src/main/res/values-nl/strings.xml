@@ -1,0 +1,69 @@
+<resources>
+
+    <!-- Common -->
+    <string name="back">Terug</string>
+    <string name="cancel">Annuleren</string>
+    <string name="delete">Verwijderen</string>
+    <string name="save">Opslaan</string>
+    <string name="undo">Ongedaan maken</string>
+    <string name="more_options">Meer opties</string>
+    <string name="digit_0">0</string>
+
+    <!-- Project list -->
+    <string name="project_list_title">Mijn breisels</string>
+    <string name="create_project">Aanmaken</string>
+    <string name="project_list_empty">Geen breiproject aangemaakt</string>
+    <string name="error_create_project">Het aanmaken van een nieuw project is mislukt.</string>
+
+    <!-- Project details -->
+    <string name="last_saved">Laatst opgeslagen: %1$s</string>
+    <string name="project_name_placeholder">Projectnaam</string>
+    <string name="change_project_icon">Projecticoon wijzigen</string>
+    <string name="project_notes_title">Notities</string>
+    <string name="project_notes_placeholder">Voer hier je notities in&#8230;</string>
+
+    <string name="delete_project">Project verwijderen</string>
+    <string name="delete_project_title">%1$s verwijderen?</string>
+    <string name="error_delete_project">Het verwijderen van het project is mislukt.</string>
+    <string name="error_save_project">Het opslaan van de wijziging is mislukt.</string>
+
+    <!-- Project icons -->
+    <string name="project_icon_picker_title">Kies een projecticoon</string>
+
+    <!-- Row counters -->
+    <string name="counters">Tellers</string>
+    <string name="add_counter">Teller toevoegen</string>
+    <string name="edit_counter">Teller bewerken</string>
+    <string name="delete_counter">Teller verwijderen</string>
+    <string name="reset_counter">Teller resetten</string>
+    <string name="increment_counter">Teller verhogen</string>
+    <string name="decrement_counter">Teller verlagen</string>
+    <string name="row_counter_options">Opties voor rijteller</string>
+
+    <string name="name">Naam</string>
+    <string name="count">Aantal</string>
+    <string name="target_optional">Doel (optioneel)</string>
+
+    <string name="delete_row_counter_title">%1$s (%2$d) verwijderen?</string>
+    <string name="row_counter_reset_from">Rijteller gereset vanaf: %1$d</string>
+    <string name="action_cannot_be_undone">Deze actie kan niet ongedaan worden gemaakt.</string>
+
+    <!-- Settings -->
+    <string name="settings">Instellingen</string>
+    <string name="settings_colour_theme">Kleurthema</string>
+    <string name="settings_brightness">Helderheid</string>
+    <string name="error_update_theme_colour">Het bijwerken van de themakleur is mislukt.</string>
+    <string name="error_update_theme_mode">Het bijwerken van de themamodus is mislukt.</string>
+
+    <!-- Theme modes -->
+    <string name="theme_mode_system_default">Systeem</string>
+    <string name="theme_mode_light">Licht</string>
+    <string name="theme_mode_dark">Donker</string>
+
+    <!-- Theme colours -->
+    <string name="theme_color_cream">Crème</string>
+    <string name="theme_color_green">Groen</string>
+    <string name="theme_color_blue">Blauw</string>
+    <string name="theme_color_pink">Roze</string>
+
+</resources>

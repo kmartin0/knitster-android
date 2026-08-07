@@ -9,10 +9,12 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import nl.kmartin.knitster.R
 import nl.kmartin.knitster.data.repository.ProjectRepository
 import nl.kmartin.knitster.data.repository.ThemeRepository
 import nl.kmartin.knitster.theme.ThemeColor
 import nl.kmartin.knitster.theme.ThemeMode
+import nl.kmartin.knitster.ui.UiText
 import javax.inject.Inject
 import kotlin.coroutines.cancellation.CancellationException
 
@@ -55,7 +57,7 @@ class ProjectListViewModel @Inject constructor(
                 _uiState.update {
                     it.copy(
                         isCreatingProject = false,
-                        createProjectErrorMsg = "Failed creating a new project."
+                        createProjectErrorMsg = UiText.Resource(R.string.error_create_project)
                     )
                 }
             }
@@ -86,7 +88,7 @@ class ProjectListViewModel @Inject constructor(
                 Log.e(TAG, "Failed to save theme colour", e)
 
                 _uiState.update {
-                    it.copy(settingsErrorMsg = "Couldn't update theme colour.")
+                    it.copy(settingsErrorMsg = UiText.Resource(R.string.error_update_theme_colour))
                 }
             }
         }
@@ -102,7 +104,7 @@ class ProjectListViewModel @Inject constructor(
                 Log.e(TAG, "Failed to save theme mode", e)
 
                 _uiState.update {
-                    it.copy(settingsErrorMsg = "Couldn't update theme mode.")
+                    it.copy(settingsErrorMsg = UiText.Resource(R.string.error_update_theme_mode))
                 }
             }
         }

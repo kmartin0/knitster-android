@@ -28,12 +28,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
+import nl.kmartin.knitster.R
 import nl.kmartin.knitster.data.model.RowCounter
 import nl.kmartin.knitster.theme.Dimensions
 
@@ -201,7 +203,7 @@ private fun RowCounterNameField(
         modifier = modifier.fillMaxWidth(),
         state = state,
         label = {
-            Text("Name")
+            Text(stringResource(R.string.name))
         },
         keyboardOptions = KeyboardOptions(
             imeAction = ImeAction.Done,
@@ -227,8 +229,8 @@ private fun RowCounterCountField(
     OutlinedTextField(
         modifier = modifier.fillMaxWidth(),
         state = state,
-        label = { Text("Count") },
-        placeholder = { Text("0") },
+        label = {  Text(stringResource(R.string.count)) },
+        placeholder = { Text(stringResource(R.string.digit_0)) },
         keyboardOptions = KeyboardOptions(
             keyboardType = KeyboardType.Number,
             imeAction = ImeAction.Done
@@ -259,7 +261,7 @@ private fun RowCounterTargetField(
         modifier = modifier.fillMaxWidth(),
         state = state,
         label = {
-            Text("Target (optional)")
+            Text(stringResource(R.string.target_optional))
         },
         keyboardOptions = KeyboardOptions(
             keyboardType = KeyboardType.Number,
@@ -296,7 +298,7 @@ private fun RowCounterFormActions(
             onClick = onSaveClick
         ) {
             Text(
-                text = "Save",
+                text = stringResource(R.string.save),
                 style = MaterialTheme.typography.titleMedium
             )
         }
@@ -306,7 +308,7 @@ private fun RowCounterFormActions(
             onClick = onCancelClick
         ) {
             Text(
-                text = "Cancel",
+                text = stringResource(R.string.cancel),
                 style = MaterialTheme.typography.titleMedium
             )
         }

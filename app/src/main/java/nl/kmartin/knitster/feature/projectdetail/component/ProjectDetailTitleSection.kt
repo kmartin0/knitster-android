@@ -18,10 +18,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import nl.kmartin.knitster.R
 import nl.kmartin.knitster.data.model.ProjectIcon
 import nl.kmartin.knitster.theme.KnitsterBorder
 import nl.kmartin.knitster.theme.knitsterBorder
@@ -64,7 +66,7 @@ internal fun ProjectDetailTitleSection(
         ) {
             Icon(
                 painter = painterResource(projectIcon.drawableRes),
-                contentDescription = "Change project icon"
+                contentDescription = stringResource(R.string.change_project_icon)
             )
         }
         KnitsterTextField(
@@ -72,7 +74,7 @@ internal fun ProjectDetailTitleSection(
                 .weight(1f)
                 .fillMaxSize(),
             state = projectNameState,
-            placeholder = "Project name",
+            placeholder = stringResource(R.string.project_name_placeholder),
             keyboardOptions = KeyboardOptions(
                 imeAction = ImeAction.Done,
                 capitalization = KeyboardCapitalization.Sentences,

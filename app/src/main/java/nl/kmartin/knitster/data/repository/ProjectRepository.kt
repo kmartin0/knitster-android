@@ -37,7 +37,7 @@ class ProjectRepository @Inject constructor(
         val now = Instant.now()
         return projectDao.insert(
             Project(
-                name = "New Project",
+                name = "",
                 lastSavedAt = now,
                 createdAt = now
             ).toEntity()

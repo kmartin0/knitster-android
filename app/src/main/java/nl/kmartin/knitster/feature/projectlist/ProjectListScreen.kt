@@ -26,6 +26,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -36,8 +37,10 @@ import nl.kmartin.knitster.data.model.ProjectIcon
 import nl.kmartin.knitster.theme.Dimensions
 import nl.kmartin.knitster.theme.KnitsterBorder
 import nl.kmartin.knitster.theme.knitsterTopAppBarColors
+import nl.kmartin.knitster.ui.toDisplayStringOrNull
 import nl.kmartin.knitster.ui.component.AppBarCircularProgressIndicator
 import nl.kmartin.knitster.ui.component.ObserveSnackbarError
+import nl.kmartin.knitster.ui.toDisplayString
 import java.time.Instant
 
 /**
@@ -61,13 +64,13 @@ fun ProjectListScreen(
     )
 
     ObserveSnackbarError(
-        errorMessage = uiState.createProjectErrorMsg,
+        errorMessage = uiState.createProjectErrorMsg.toDisplayStringOrNull(),
         snackbarHostState = snackbarHostState,
         onErrorShown = viewModel::clearCreateProjectErrorMsg
     )
 
     ObserveSnackbarError(
-        errorMessage = uiState.settingsErrorMsg,
+        errorMessage = uiState.settingsErrorMsg.toDisplayStringOrNull(),
         snackbarHostState = snackbarHostState,
         onErrorShown = viewModel::clearSettingsErrorMsg
     )
@@ -175,7 +178,7 @@ private fun ProjectListTopAppBar(
     TopAppBar(
         title = {
             Text(
-                text = "My knits"
+                text = stringResource(R.string.project_list_title)
             )
         },
         colors = knitsterTopAppBarColors(),
@@ -186,7 +189,7 @@ private fun ProjectListTopAppBar(
             ) {
                 Icon(
                     painter = painterResource(R.drawable.ic_settings),
-                    contentDescription = "Settings"
+                    contentDescription = stringResource(R.string.settings)
                 )
             }
             FilledTonalIconButton(
@@ -196,7 +199,7 @@ private fun ProjectListTopAppBar(
             ) {
                 Icon(
                     painter = painterResource(R.drawable.ic_add),
-                    contentDescription = "Create"
+                    contentDescription = stringResource(R.string.create_project)
                 )
             }
         }
@@ -241,7 +244,7 @@ private fun ProjectListEmptyState(
     Box(
         modifier = modifier.padding(16.dp),
     ) {
-        Text("No knitting project created")
+        Text(stringResource(R.string.project_list_empty))
     }
 }
 

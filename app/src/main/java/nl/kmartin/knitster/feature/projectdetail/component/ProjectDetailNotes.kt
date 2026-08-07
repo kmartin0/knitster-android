@@ -8,8 +8,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import nl.kmartin.knitster.R
 import nl.kmartin.knitster.ui.component.KnitsterTextField
 
 /**
@@ -30,7 +32,7 @@ internal fun ProjectDetailNotes(
         verticalArrangement = Arrangement.spacedBy(6.dp)
     ) {
         Text(
-            text = "Notes",
+            text = stringResource(R.string.project_notes_title),
             style = MaterialTheme.typography.titleLarge
         )
         KnitsterTextField(
@@ -40,7 +42,7 @@ internal fun ProjectDetailNotes(
                 minHeightInLines = minHeightInLines,
                 maxHeightInLines = maxHeightInLines
             ),
-            placeholder = "Enter your notes here...",
+            placeholder = stringResource(R.string.project_notes_placeholder),
         )
     }
 }

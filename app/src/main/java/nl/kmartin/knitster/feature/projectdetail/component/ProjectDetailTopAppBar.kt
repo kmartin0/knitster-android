@@ -15,6 +15,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import nl.kmartin.knitster.R
 import nl.kmartin.knitster.theme.knitsterTopAppBarColors
@@ -42,7 +43,7 @@ internal fun ProjectDetailTopAppBar(
             IconButton(onClick = onBackClick) {
                 Icon(
                     painter = painterResource(R.drawable.ic_arrow_back),
-                    contentDescription = "Back",
+                    contentDescription = stringResource(R.string.back),
                 )
             }
         },
@@ -67,7 +68,7 @@ private fun ProjectDetailOverflowMenu(
         IconButton(onClick = { showMenu = true }) {
             Icon(
                 painter = painterResource(R.drawable.ic_more_vert),
-                contentDescription = "More options"
+                contentDescription = stringResource(R.string.more_options)
             )
         }
 
@@ -76,7 +77,7 @@ private fun ProjectDetailOverflowMenu(
             onDismissRequest = { showMenu = false },
         ) {
             DropdownMenuItem(
-                text = { Text("Delete project") },
+                text = { Text(stringResource(R.string.delete_project)) },
                 onClick = {
                     showMenu = false
                     onDeleteClick()

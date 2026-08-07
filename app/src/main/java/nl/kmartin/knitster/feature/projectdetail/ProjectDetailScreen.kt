@@ -22,7 +22,6 @@ import nl.kmartin.knitster.feature.projectdetail.component.ProjectDetailDeleteRo
 import nl.kmartin.knitster.feature.projectdetail.component.ProjectDetailIconPickerBottomSheet
 import nl.kmartin.knitster.feature.projectdetail.component.ProjectDetailRowCounterFormBottomSheet
 import nl.kmartin.knitster.ui.component.ObserveSnackbarError
-import nl.kmartin.knitster.ui.toDisplayString
 import nl.kmartin.knitster.ui.toDisplayStringOrNull
 
 /**

@@ -1,4 +1,4 @@
-package nl.kmartin.knitster.feature.projectlist
+package nl.kmartin.knitster.feature.settings
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -9,25 +9,16 @@ import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.visible
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
-import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -41,7 +32,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import nl.kmartin.knitster.R
-import nl.kmartin.knitster.theme.Dimensions
 import nl.kmartin.knitster.theme.KnitsterBorder
 import nl.kmartin.knitster.theme.ThemeColor
 import nl.kmartin.knitster.theme.ThemeMode
@@ -58,55 +48,6 @@ private val themeColorGridMaxItemWidth = 92.dp
 /** Spacing between theme color grid items. */
 private val themeColorGridItemSpacing = 8.dp
 
-/**
- * Displays a bottom sheet that allows the user to customize the application's
- * appearance.
- *
- * Users can choose both the color theme and brightness mode.
- *
- * @param currentThemeColor Currently selected color theme.
- * @param currentThemeMode Currently selected brightness mode.
- * @param onThemeColorSelected Called when a color theme is selected.
- * @param onThemeModeSelected Called when a brightness mode is selected.
- * @param onDismiss Called when the bottom sheet should be dismissed.
- */
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun ProjectListSettingsBottomSheet(
-    currentThemeColor: ThemeColor,
-    currentThemeMode: ThemeMode,
-    onThemeColorSelected: (ThemeColor) -> Unit,
-    onThemeModeSelected: (ThemeMode) -> Unit,
-    onDismiss: () -> Unit
-) {
-    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-
-    ModalBottomSheet(
-        modifier = Modifier
-            .statusBarsPadding()
-            .navigationBarsPadding(),
-        onDismissRequest = onDismiss,
-        sheetState = sheetState,
-        contentWindowInsets = { WindowInsets(0.dp) }
-    ) {
-        Column(
-            modifier = Modifier
-                .padding(Dimensions.ScreenPadding)
-                .verticalScroll(rememberScrollState()),
-            verticalArrangement = Arrangement.spacedBy(24.dp)
-        ) {
-            ThemeColorPickerGrid(
-                currentThemeColor = currentThemeColor,
-                currentThemeMode = currentThemeMode,
-                onThemeColorSelected = onThemeColorSelected
-            )
-            ThemeModeGrid(
-                currentThemeMode = currentThemeMode,
-                onThemeModeSelected = onThemeModeSelected
-            )
-        }
-    }
-}
 
 /**
  * Displays the available color themes.
@@ -120,7 +61,7 @@ fun ProjectListSettingsBottomSheet(
  * @param onThemeColorSelected Called when a color theme is selected.
  */
 @Composable
-private fun ThemeColorPickerGrid(
+fun ThemeColorPicker(
     currentThemeColor: ThemeColor,
     currentThemeMode: ThemeMode,
     onThemeColorSelected: (ThemeColor) -> Unit,
@@ -291,100 +232,13 @@ private fun ThemeColorItem(
     }
 }
 
-/**
- * Displays the available brightness modes.
- *
- * The currently selected mode is highlighted and selecting a mode invokes
- * [onThemeModeSelected].
- *
- * @param currentThemeMode Currently selected brightness mode.
- * @param onThemeModeSelected Called when a brightness mode is selected.
- */
-@Composable
-private fun ThemeModeGrid(
-    currentThemeMode: ThemeMode,
-    onThemeModeSelected: (ThemeMode) -> Unit
-) {
-    Column(
-        verticalArrangement = Arrangement.spacedBy(12.dp)
-    ) {
-        Text(
-            text = stringResource(R.string.settings_brightness),
-            style = MaterialTheme.typography.titleLarge
-        )
-        ThemeMode.entries.forEach { themeMode ->
-            ThemeModeItem(
-                themeMode = themeMode,
-                isSelected = themeMode == currentThemeMode,
-                onClick = { onThemeModeSelected(themeMode) }
-            )
-        }
-    }
-}
-
-/**
- * Displays a selectable brightness mode.
- *
- * @param modifier Modifier to apply to the item.
- * @param themeMode Brightness mode represented by this item.
- * @param isSelected Whether this brightness mode is currently selected.
- * @param onClick Called when the item is selected.
- */
-@Composable
-private fun ThemeModeItem(
-    modifier: Modifier = Modifier,
-    themeMode: ThemeMode,
-    isSelected: Boolean,
-    onClick: () -> Unit
-) {
-    Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .knitsterBorder(
-                color = MaterialTheme.colorScheme.primary,
-                width = if (isSelected) KnitsterBorder.Width * 2 else KnitsterBorder.Width
-            )
-            .background(color = MaterialTheme.colorScheme.surfaceContainerHighest)
-            .padding(8.dp)
-            .clickable(
-                onClick = onClick,
-                role = Role.RadioButton,
-                onClickLabel = stringResource(themeMode.displayNameRes),
-                indication = null,
-                interactionSource = remember { MutableInteractionSource() },
-            ),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(12.dp)
-    ) {
-        Icon(
-            painter = painterResource(themeMode.drawableRes),
-            contentDescription = null,
-            tint = MaterialTheme.colorScheme.primary
-        )
-        Text(
-            text = stringResource(themeMode.displayNameRes),
-            style = MaterialTheme.typography.titleMedium
-        )
-        Spacer(modifier = Modifier.weight(1f))
-        Icon(
-            modifier = Modifier
-                .visible(isSelected),
-            painter = painterResource(R.drawable.ic_check_circle),
-            contentDescription = null,
-            tint = MaterialTheme.colorScheme.primary
-        )
-    }
-}
-
 // --- Preview ---
 @Preview(showBackground = true)
 @Composable
-private fun ProjectListSettingsBottomSheetPreview() {
-    ProjectListSettingsBottomSheet(
+private fun ThemeColorPickerPreview() {
+    ThemeColorPicker(
         currentThemeColor = ThemeColor.DEFAULT,
         currentThemeMode = ThemeMode.DEFAULT,
-        onThemeModeSelected = {},
-        onThemeColorSelected = {},
-        onDismiss = {}
+        onThemeColorSelected = {}
     )
 }

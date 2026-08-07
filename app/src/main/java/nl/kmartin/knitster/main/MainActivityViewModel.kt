@@ -5,28 +5,27 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
-import nl.kmartin.knitster.data.repository.ThemeRepository
+import nl.kmartin.knitster.data.repository.SettingsRepository
 import javax.inject.Inject
 
 @HiltViewModel
 class MainActivityViewModel @Inject constructor(
-    themeRepository: ThemeRepository
+    settingsRepository: SettingsRepository
 ) : ViewModel() {
     val uiState: StateFlow<MainActivityUiState> =
-        combine(
-            themeRepository.observeThemeColor,
-            themeRepository.observeThemeMode,
-        ) { color, mode ->
-            MainActivityUiState(
-                themeColor = color,
-                themeMode = mode,
-                themeLoaded = true
+        settingsRepository.observeSettings()
+            .map { settings ->
+                MainActivityUiState(
+                    themeColor = settings.themeColor,
+                    themeMode = settings.themeMode,
+                    themeLoaded = true
+                )
+            }
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(5_000),
+                initialValue = MainActivityUiState(),
             )
-        }.stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = MainActivityUiState(),
-        )
 }

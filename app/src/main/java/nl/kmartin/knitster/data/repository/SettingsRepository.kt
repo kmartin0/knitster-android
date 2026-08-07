@@ -7,19 +7,19 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import nl.kmartin.knitster.data.model.AppSettings
 import nl.kmartin.knitster.theme.ThemeColor
 import nl.kmartin.knitster.theme.ThemeMode
 import javax.inject.Inject
 import javax.inject.Singleton
 
 /**
- * Persists and exposes the application's theme preferences.
+ * Persists and exposes the application's settings preferences.
  *
- * Theme preferences are stored using DataStore and exposed as observable
- * [Flow]s that emit the currently selected colour theme and brightness mode.
+ * settings preferences are stored using DataStore and exposed as observable [Flow]
  */
 @Singleton
-class ThemeRepository @Inject constructor(
+class SettingsRepository @Inject constructor(
     private val dataStore: DataStore<Preferences>
 ) {
     private object Keys {
@@ -28,17 +28,24 @@ class ThemeRepository @Inject constructor(
     }
 
     /**
-     * Observes the currently selected color theme.
+     * Observes the persisted application settings.
+     * Missing preferences fall back to the defaults defined by [AppSettings].
+     *
+     * @return A flow that emits the current application settings whenever they change.
      */
-    val observeThemeColor: Flow<ThemeColor> = dataStore.data.map { prefs ->
-        prefs[Keys.THEME_COLOR]?.let { ThemeColor.fromId(it) } ?: ThemeColor.DEFAULT
-    }
+    fun observeSettings(): Flow<AppSettings> {
+        val defaults = AppSettings()
 
-    /**
-     * Observes the currently selected brightness mode.
-     */
-    val observeThemeMode: Flow<ThemeMode> = dataStore.data.map { prefs ->
-        prefs[Keys.THEME_MODE]?.let { ThemeMode.fromId(it) } ?: ThemeMode.DEFAULT
+        return dataStore.data.map { prefs ->
+            AppSettings(
+                themeColor = prefs[Keys.THEME_COLOR]
+                    ?.let(ThemeColor::fromId)
+                    ?: defaults.themeColor,
+                themeMode = prefs[Keys.THEME_MODE]
+                    ?.let(ThemeMode::fromId)
+                    ?: defaults.themeMode
+            )
+        }
     }
 
     /**

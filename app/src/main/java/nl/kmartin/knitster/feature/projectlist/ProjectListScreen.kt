@@ -37,10 +37,9 @@ import nl.kmartin.knitster.data.model.ProjectIcon
 import nl.kmartin.knitster.theme.Dimensions
 import nl.kmartin.knitster.theme.KnitsterBorder
 import nl.kmartin.knitster.theme.knitsterTopAppBarColors
-import nl.kmartin.knitster.ui.toDisplayStringOrNull
 import nl.kmartin.knitster.ui.component.AppBarCircularProgressIndicator
 import nl.kmartin.knitster.ui.component.ObserveSnackbarError
-import nl.kmartin.knitster.ui.toDisplayString
+import nl.kmartin.knitster.ui.toDisplayStringOrNull
 import java.time.Instant
 
 /**
@@ -49,13 +48,13 @@ import java.time.Instant
 @Composable
 fun ProjectListScreen(
     onNavigateToProjectDetail: (Long) -> Unit,
+    onNavigateToSettings: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: ProjectListViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
     val projectListState = rememberLazyListState()
-    var showSettingsBottomSheet by rememberSaveable { mutableStateOf(false) }
 
     ObserveCreatedProject(
         createdProjectId = uiState.createdProjectId,
@@ -69,32 +68,16 @@ fun ProjectListScreen(
         onErrorShown = viewModel::clearCreateProjectErrorMsg
     )
 
-    ObserveSnackbarError(
-        errorMessage = uiState.settingsErrorMsg.toDisplayStringOrNull(),
-        snackbarHostState = snackbarHostState,
-        onErrorShown = viewModel::clearSettingsErrorMsg
-    )
-
     ObserveProjectListChanges(
         projects = uiState.projects,
         listState = projectListState,
     )
 
-    if (showSettingsBottomSheet) {
-        ProjectListSettingsBottomSheet(
-            currentThemeColor = uiState.themeColor,
-            currentThemeMode = uiState.themeMode,
-            onThemeColorSelected = viewModel::setThemeColor,
-            onThemeModeSelected = viewModel::setThemeMode,
-            onDismiss = { showSettingsBottomSheet = false }
-        )
-    }
-
     ProjectListContent(
         uiState = uiState,
         onCreateProjectClick = viewModel::createNewProject,
         onProjectClick = onNavigateToProjectDetail,
-        onSettingsClick = { showSettingsBottomSheet = true },
+        onSettingsClick = onNavigateToSettings,
         snackbarHostState = snackbarHostState,
         modifier = modifier,
         projectListState = projectListState

@@ -31,8 +31,8 @@ import nl.kmartin.knitster.R
 import nl.kmartin.knitster.data.model.Project
 import nl.kmartin.knitster.data.model.ProjectIcon
 import nl.kmartin.knitster.data.model.RowCounter
-import nl.kmartin.knitster.theme.KnitsterBorder
 import nl.kmartin.knitster.theme.FontFeatures
+import nl.kmartin.knitster.theme.KnitsterBorder
 import nl.kmartin.knitster.theme.knitsterBorder
 import nl.kmartin.knitster.util.toFormattedLastSavedString
 import java.time.Instant

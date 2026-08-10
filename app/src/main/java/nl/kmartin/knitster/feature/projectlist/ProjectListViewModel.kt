@@ -1,6 +1,5 @@
 package nl.kmartin.knitster.feature.projectlist
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -12,8 +11,8 @@ import kotlinx.coroutines.launch
 import nl.kmartin.knitster.R
 import nl.kmartin.knitster.data.repository.ProjectRepository
 import nl.kmartin.knitster.ui.UiText
+import nl.kmartin.knitster.ui.launchOperation
 import javax.inject.Inject
-import kotlin.coroutines.cancellation.CancellationException
 
 private const val TAG = "ProjectListViewModel"
 
@@ -36,26 +35,24 @@ class ProjectListViewModel @Inject constructor(
      * and cleared via [clearCreateProjectErrorMsg].
      */
     fun createNewProject() {
-        viewModelScope.launch {
-            _uiState.update { it.copy(isCreatingProject = true) }
-            try {
-                val id = projectRepository.insertEmptyProject()
-                check(id > 0) {
-                    "Insert returned invalid id: $id"
-                }
+        _uiState.update { it.copy(isCreatingProject = true) }
+
+        launchOperation(
+            operation = { projectRepository.insertEmptyProject() },
+            onSuccess = { id ->
                 _uiState.update { it.copy(createdProjectId = id, isCreatingProject = false) }
-            } catch (e: CancellationException) {
-                throw e
-            } catch (e: Exception) {
-                Log.e(TAG, "Failed to create a new project", e)
+            },
+            onError = {
                 _uiState.update {
                     it.copy(
                         isCreatingProject = false,
                         createProjectErrorMsg = UiText.Resource(R.string.error_create_project)
                     )
                 }
-            }
-        }
+            },
+            logTag = TAG,
+            errorLogMsg = "Failed to create a new project"
+        )
     }
 
     /**

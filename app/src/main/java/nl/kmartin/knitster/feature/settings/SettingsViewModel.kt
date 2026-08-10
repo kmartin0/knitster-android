@@ -1,6 +1,5 @@
 package nl.kmartin.knitster.feature.settings
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -15,8 +14,8 @@ import nl.kmartin.knitster.data.model.ThemeColor
 import nl.kmartin.knitster.data.model.ThemeMode
 import nl.kmartin.knitster.data.repository.SettingsRepository
 import nl.kmartin.knitster.ui.UiText
+import nl.kmartin.knitster.ui.launchOperation
 import javax.inject.Inject
-import kotlin.coroutines.cancellation.CancellationException
 
 private const val TAG = "SettingsViewModel"
 
@@ -49,19 +48,16 @@ class SettingsViewModel @Inject constructor(
      * @param newThemeColor Theme color to persist.
      */
     fun setThemeColor(newThemeColor: ThemeColor) {
-        viewModelScope.launch {
-            try {
-                settingsRepository.setThemeColor(newThemeColor)
-            } catch (e: CancellationException) {
-                throw e
-            } catch (e: Exception) {
-                Log.e(TAG, "Failed to save theme colour", e)
-
+        launchOperation(
+            operation = { settingsRepository.setThemeColor(newThemeColor) },
+            onError = {
                 _uiState.update {
                     it.copy(settingsErrorMsg = UiText.Resource(R.string.error_update_theme_colour))
                 }
-            }
-        }
+            },
+            logTag = TAG,
+            errorLogMsg = "Failed to save theme colour"
+        )
     }
 
     /**
@@ -72,19 +68,16 @@ class SettingsViewModel @Inject constructor(
      * @param newThemeMode Brightness mode to persist.
      */
     fun setThemeMode(newThemeMode: ThemeMode) {
-        viewModelScope.launch {
-            try {
-                settingsRepository.setThemeMode(newThemeMode)
-            } catch (e: CancellationException) {
-                throw e
-            } catch (e: Exception) {
-                Log.e(TAG, "Failed to save theme mode", e)
-
+        launchOperation(
+            operation = { settingsRepository.setThemeMode(newThemeMode) },
+            onError = {
                 _uiState.update {
                     it.copy(settingsErrorMsg = UiText.Resource(R.string.error_update_theme_mode))
                 }
-            }
-        }
+            },
+            logTag = TAG,
+            errorLogMsg = "Failed to save theme mode"
+        )
     }
 
     /**
@@ -104,19 +97,16 @@ class SettingsViewModel @Inject constructor(
      * @param newKeepScreenAwake Whether to prevent the screen from turning off.
      */
     fun setKeepScreenAwake(newKeepScreenAwake: Boolean) {
-        viewModelScope.launch {
-            try {
-                settingsRepository.setKeepScreenAwake(newKeepScreenAwake)
-            } catch (e: CancellationException) {
-                throw e
-            } catch (e: Exception) {
-                Log.e(TAG, "Failed to save keep screen awake", e)
-
+        launchOperation(
+            operation = { settingsRepository.setKeepScreenAwake(newKeepScreenAwake) },
+            onError = {
                 _uiState.update {
                     it.copy(settingsErrorMsg = UiText.Resource(R.string.error_update_keep_screen_awake))
                 }
-            }
-        }
+            },
+            logTag = TAG,
+            errorLogMsg = "Failed to save keep screen awake"
+        )
     }
 
     /**

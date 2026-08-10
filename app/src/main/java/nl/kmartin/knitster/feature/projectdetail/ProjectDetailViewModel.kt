@@ -1,6 +1,5 @@
 package nl.kmartin.knitster.feature.projectdetail
 
-import android.util.Log
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.foundation.text.input.setTextAndPlaceCursorAtEnd
 import androidx.compose.runtime.snapshotFlow
@@ -23,8 +22,8 @@ import nl.kmartin.knitster.data.model.RowCounter
 import nl.kmartin.knitster.data.repository.ProjectRepository
 import nl.kmartin.knitster.navigation.ProjectDetailDestination
 import nl.kmartin.knitster.ui.UiText
+import nl.kmartin.knitster.ui.launchOperation
 import javax.inject.Inject
-import kotlin.coroutines.cancellation.CancellationException
 import kotlin.time.Duration.Companion.milliseconds
 
 private const val TAG = "ProjectDetailViewModel"
@@ -85,15 +84,20 @@ class ProjectDetailViewModel @Inject constructor(
     fun addRowCounter(rowCounter: RowCounter) {
         val currentProject = _uiState.value.project ?: return
 
-        executeRepositoryOperation(
-            projectId = currentProject.id,
+        launchOperation(
             operation = {
                 projectRepository.addRowCounter(
                     projectId = currentProject.id,
                     rowCounter = rowCounter
                 )
             },
-            isSuccess = { it > 0L }
+            onError = {
+                _uiState.update {
+                    it.copy(saveProjectErrorMsg = UiText.Resource(R.string.error_save_project))
+                }
+            },
+            logTag = TAG,
+            errorLogMsg = "Failed to add row counter to project ${currentProject.id}"
         )
     }
 
@@ -105,8 +109,7 @@ class ProjectDetailViewModel @Inject constructor(
     fun incrementRowCounter(rowCounterId: Long) {
         val (currentProject, rowCounter) = findRowCounter(rowCounterId) ?: return
 
-        executeRepositoryOperation(
-            projectId = currentProject.id,
+        launchOperation(
             operation = {
                 projectRepository.updateRowCounterCount(
                     id = rowCounterId,
@@ -114,7 +117,13 @@ class ProjectDetailViewModel @Inject constructor(
                     projectId = currentProject.id
                 )
             },
-            isSuccess = { it > 0 }
+            onError = {
+                _uiState.update {
+                    it.copy(saveProjectErrorMsg = UiText.Resource(R.string.error_save_project))
+                }
+            },
+            logTag = TAG,
+            errorLogMsg = "Failed to increment row counter $rowCounterId"
         )
     }
 
@@ -128,8 +137,7 @@ class ProjectDetailViewModel @Inject constructor(
         val (currentProject, rowCounter) = findRowCounter(rowCounterId) ?: return
         if (rowCounter.count <= 0) return
 
-        executeRepositoryOperation(
-            projectId = currentProject.id,
+        launchOperation(
             operation = {
                 projectRepository.updateRowCounterCount(
                     id = rowCounterId,
@@ -137,7 +145,13 @@ class ProjectDetailViewModel @Inject constructor(
                     projectId = currentProject.id
                 )
             },
-            isSuccess = { it > 0 }
+            onError = {
+                _uiState.update {
+                    it.copy(saveProjectErrorMsg = UiText.Resource(R.string.error_save_project))
+                }
+            },
+            logTag = TAG,
+            errorLogMsg = "Failed to decrement row counter $rowCounterId",
         )
     }
 
@@ -154,8 +168,7 @@ class ProjectDetailViewModel @Inject constructor(
         val previousCount = rowCounter.count
         if (previousCount == 0) return
 
-        executeRepositoryOperation(
-            projectId = currentProject.id,
+        launchOperation(
             operation = {
                 projectRepository.updateRowCounterCount(
                     id = rowCounterId,
@@ -163,7 +176,6 @@ class ProjectDetailViewModel @Inject constructor(
                     count = 0
                 )
             },
-            isSuccess = { it > 0 },
             onSuccess = {
                 _uiState.update {
                     it.copy(
@@ -173,7 +185,14 @@ class ProjectDetailViewModel @Inject constructor(
                         )
                     )
                 }
-            }
+            },
+            onError = {
+                _uiState.update {
+                    it.copy(saveProjectErrorMsg = UiText.Resource(R.string.error_save_project))
+                }
+            },
+            logTag = TAG,
+            errorLogMsg = "Failed to reset row counter $rowCounterId",
         )
     }
 
@@ -185,8 +204,7 @@ class ProjectDetailViewModel @Inject constructor(
         val undoResetRowCounter = _uiState.value.undoResetRowCounter ?: return
         val currentProject = _uiState.value.project ?: return
 
-        executeRepositoryOperation(
-            projectId = currentProject.id,
+        launchOperation(
             operation = {
                 projectRepository.updateRowCounterCount(
                     id = undoResetRowCounter.rowCounterId,
@@ -194,10 +212,16 @@ class ProjectDetailViewModel @Inject constructor(
                     count = undoResetRowCounter.previousCount
                 )
             },
-            isSuccess = { it > 0 },
             onSuccess = {
                 _uiState.update { it.copy(undoResetRowCounter = null) }
-            }
+            },
+            onError = {
+                _uiState.update {
+                    it.copy(saveProjectErrorMsg = UiText.Resource(R.string.error_save_project))
+                }
+            },
+            logTag = TAG,
+            errorLogMsg = "Failed to undo row counter reset ${undoResetRowCounter.rowCounterId}",
         )
     }
 
@@ -216,15 +240,20 @@ class ProjectDetailViewModel @Inject constructor(
     fun deleteRowCounter(rowCounterId: Long) {
         val (currentProject, rowCounter) = findRowCounter(rowCounterId) ?: return
 
-        executeRepositoryOperation(
-            projectId = currentProject.id,
+        launchOperation(
             operation = {
                 projectRepository.deleteRowCounter(
                     rowCounter = rowCounter,
                     projectId = currentProject.id
                 )
             },
-            isSuccess = { it > 0 }
+            onError = {
+                _uiState.update {
+                    it.copy(saveProjectErrorMsg = UiText.Resource(R.string.error_save_project))
+                }
+            },
+            logTag = TAG,
+            errorLogMsg = "Failed to delete row counter $rowCounterId",
         )
     }
 
@@ -236,15 +265,20 @@ class ProjectDetailViewModel @Inject constructor(
     fun updateRowCounter(rowCounter: RowCounter) {
         val currentProject = _uiState.value.project ?: return
 
-        executeRepositoryOperation(
-            projectId = currentProject.id,
+        launchOperation(
             operation = {
                 projectRepository.updateRowCounter(
                     rowCounter = rowCounter,
                     projectId = currentProject.id
                 )
             },
-            isSuccess = { it > 0 }
+            onError = {
+                _uiState.update {
+                    it.copy(saveProjectErrorMsg = UiText.Resource(R.string.error_save_project))
+                }
+            },
+            logTag = TAG,
+            errorLogMsg = "Failed to update row counter ${rowCounter.id}",
         )
     }
 
@@ -256,19 +290,17 @@ class ProjectDetailViewModel @Inject constructor(
      */
     fun deleteProject() {
         val currentProject = _uiState.value.project ?: return
-        viewModelScope.launch {
-            try {
-                check(projectRepository.deleteProject(currentProject) > 0) {
-                    "Project ${currentProject.id} was not deleted."
+
+        launchOperation(
+            operation = {
+                projectRepository.deleteProject(currentProject)
+            },
+            onSuccess = {
+                _uiState.update {
+                    it.copy(projectDeleted = true)
                 }
-
-                _uiState.update { it.copy(projectDeleted = true) }
-            } catch (e: CancellationException) {
-                // Rethrow cancellation so the coroutine can be canceled normally.
-                throw e
-            } catch (e: Exception) {
-                Log.e(TAG, "Failed to delete project ${currentProject.id}", e)
-
+            },
+            onError = {
                 _uiState.update {
                     it.copy(
                         deleteProjectErrorMsg = UiText.Resource(
@@ -276,8 +308,10 @@ class ProjectDetailViewModel @Inject constructor(
                         )
                     )
                 }
-            }
-        }
+            },
+            logTag = TAG,
+            errorLogMsg = "Failed to delete project ${currentProject.id}"
+        )
     }
 
     /**
@@ -288,15 +322,20 @@ class ProjectDetailViewModel @Inject constructor(
     fun updateProjectIcon(newIcon: ProjectIcon) {
         val currentProject = _uiState.value.project ?: return
 
-        executeRepositoryOperation(
-            projectId = currentProject.id,
+        launchOperation(
             operation = {
                 projectRepository.updateProjectIcon(
                     projectId = currentProject.id,
                     icon = newIcon
                 )
             },
-            isSuccess = { it > 0 }
+            onError = {
+                _uiState.update {
+                    it.copy(saveProjectErrorMsg = UiText.Resource(R.string.error_save_project))
+                }
+            },
+            logTag = TAG,
+            errorLogMsg = "Failed to update project icon ${currentProject.id}"
         )
     }
 
@@ -351,7 +390,7 @@ class ProjectDetailViewModel @Inject constructor(
     private fun observeTextChanges(
         textFieldState: TextFieldState,
         currentValue: (Project) -> String,
-        onTextChanged: suspend (projectId: Long, text: String) -> Int,
+        onTextChanged: suspend (projectId: Long, text: String) -> Unit,
     ) {
         viewModelScope.launch {
             snapshotFlow {
@@ -362,55 +401,20 @@ class ProjectDetailViewModel @Inject constructor(
                     val project = _uiState.value.project ?: return@collect
 
                     if (currentValue(project) != newText) {
-                        executeRepositoryOperation(
-                            projectId = project.id,
+                        launchOperation(
                             operation = {
                                 onTextChanged(project.id, newText)
                             },
-                            isSuccess = { it > 0 }
+                            onError = {
+                                _uiState.update {
+                                    it.copy(saveProjectErrorMsg = UiText.Resource(R.string.error_save_project))
+                                }
+                            },
+                            logTag = TAG,
+                            errorLogMsg = "Failed to update project text ${project.id}",
                         )
                     }
                 }
-        }
-    }
-
-    /**
-     * Executes a repository operation and reports unsuccessful updates through UI state.
-     *
-     * Coroutine cancellation is rethrown so structured cancellation behaves normally.
-     *
-     * @param projectId ID of the project associated with the operation.
-     * @param operation Repository operation to execute.
-     * @param isSuccess Determines whether the returned result represents success.
-     * @param onSuccess Called with the successful operation result after [isSuccess] returns `true`.
-     */
-    private fun <T> executeRepositoryOperation(
-        projectId: Long,
-        operation: suspend () -> T,
-        isSuccess: (T) -> Boolean,
-        onSuccess: (T) -> Unit = {}
-    ) {
-        viewModelScope.launch {
-            try {
-                val result = operation()
-
-                check(isSuccess(result)) {
-                    "Operation for project $projectId did not succeed."
-                }
-                onSuccess(result)
-            } catch (e: CancellationException) {
-                throw e
-            } catch (e: Exception) {
-                Log.e(TAG, "Failed operation for project $projectId", e)
-
-                _uiState.update {
-                    it.copy(
-                        saveProjectErrorMsg = UiText.Resource(
-                            R.string.error_save_project
-                        )
-                    )
-                }
-            }
         }
     }
 

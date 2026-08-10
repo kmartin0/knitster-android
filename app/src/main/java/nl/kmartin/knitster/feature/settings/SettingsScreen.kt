@@ -63,6 +63,7 @@ fun SettingsScreen(
         onThemeColorSelected = viewModel::setThemeColor,
         onThemeModeSelected = viewModel::setThemeMode,
         onLanguageModeSelected = viewModel::setLanguageMode,
+        onKeepScreenAwakeChanged = viewModel::setKeepScreenAwake,
         onBackClick = onNavigateBack
     )
 }
@@ -79,6 +80,7 @@ fun SettingsScreen(
  * @param onThemeColorSelected Called when a theme color is selected.
  * @param onThemeModeSelected Called when a brightness mode is selected.
  * @param onLanguageModeSelected Called when an application language mode is selected.
+ * @param onKeepScreenAwakeChanged Called when the `keepScreenAwake` setting is changed.
  * @param onBackClick Called when the back button is clicked.
  */
 @Composable
@@ -89,6 +91,7 @@ private fun SettingsScreenContent(
     onThemeColorSelected: (ThemeColor) -> Unit,
     onThemeModeSelected: (ThemeMode) -> Unit,
     onLanguageModeSelected: (LanguageMode) -> Unit,
+    onKeepScreenAwakeChanged: (Boolean) -> Unit,
     onBackClick: () -> Unit
 ) {
     Scaffold(
@@ -125,6 +128,11 @@ private fun SettingsScreenContent(
                 LanguagePicker(
                     currentLanguageMode = loadedSettings.appLocales,
                     onLanguageModeSelected = onLanguageModeSelected
+                )
+
+                GeneralSettings(
+                    keepScreenAwake = loadedSettings.keepScreenAwake,
+                    onKeepScreenAwakeChanged = onKeepScreenAwakeChanged
                 )
             }
         }
@@ -176,6 +184,7 @@ private fun SettingsScreenContentPreview() {
         onThemeColorSelected = {},
         onThemeModeSelected = {},
         onLanguageModeSelected = {},
+        onKeepScreenAwakeChanged = {},
         onBackClick = {}
     )
 }

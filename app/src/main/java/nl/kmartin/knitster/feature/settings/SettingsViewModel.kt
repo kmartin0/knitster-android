@@ -97,6 +97,29 @@ class SettingsViewModel @Inject constructor(
     }
 
     /**
+     * Persists whether the screen should remain awake while the application is in use.
+     *
+     * Any failure is exposed through [SettingsUiState.settingsErrorMsg].
+     *
+     * @param newKeepScreenAwake Whether to prevent the screen from turning off.
+     */
+    fun setKeepScreenAwake(newKeepScreenAwake: Boolean) {
+        viewModelScope.launch {
+            try {
+                settingsRepository.setKeepScreenAwake(newKeepScreenAwake)
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                Log.e(TAG, "Failed to save keep screen awake", e)
+
+                _uiState.update {
+                    it.copy(settingsErrorMsg = UiText.Resource(R.string.error_update_keep_screen_awake))
+                }
+            }
+        }
+    }
+
+    /**
      * Clears the pending settings error message.
      */
     fun clearSettingsErrorMsg() {

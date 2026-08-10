@@ -14,13 +14,12 @@ import javax.inject.Inject
 class MainActivityViewModel @Inject constructor(
     settingsRepository: SettingsRepository
 ) : ViewModel() {
+
     val uiState: StateFlow<MainActivityUiState> =
         settingsRepository.observeSettings()
             .map { settings ->
                 MainActivityUiState(
-                    themeColor = settings.themeColor,
-                    themeMode = settings.themeMode,
-                    themeLoaded = true
+                    appSettings = settings
                 )
             }
             .stateIn(

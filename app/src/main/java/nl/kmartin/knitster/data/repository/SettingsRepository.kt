@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.os.LocaleListCompat
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import kotlinx.coroutines.flow.Flow
@@ -33,12 +34,13 @@ class SettingsRepository @Inject constructor(
     private object Keys {
         val THEME_COLOR = stringPreferencesKey("theme_color")
         val THEME_MODE = stringPreferencesKey("theme_mode")
+        val KEEP_SCREEN_AWAKE = booleanPreferencesKey("keep_screen_awake")
     }
 
     /**
      * Observes the current application settings.
      *
-     * Theme preferences are read from DataStore and missing values fall back to the
+     * Persisted preferences are read from DataStore and missing values fall back to the
      * defaults defined by [AppSettings]. The current language mode is derived from
      * [AppLocaleObserver].
      *
@@ -52,6 +54,7 @@ class SettingsRepository @Inject constructor(
                 themeColor = prefs[Keys.THEME_COLOR]?.let(ThemeColor::fromId)
                     ?: defaults.themeColor,
                 themeMode = prefs[Keys.THEME_MODE]?.let(ThemeMode::fromId) ?: defaults.themeMode,
+                keepScreenAwake = prefs[Keys.KEEP_SCREEN_AWAKE] ?: defaults.keepScreenAwake,
                 appLocales = locales.toLanguageMode()
             )
         }
@@ -73,6 +76,15 @@ class SettingsRepository @Inject constructor(
      */
     suspend fun setThemeMode(themeMode: ThemeMode) {
         dataStore.edit { prefs -> prefs[Keys.THEME_MODE] = themeMode.id }
+    }
+
+    /**
+     * Persists whether the screen should remain awake while the application is in use.
+     *
+     * @param keepScreenAwake Whether to prevent the screen from turning off.
+     */
+    suspend fun setKeepScreenAwake(keepScreenAwake: Boolean) {
+        dataStore.edit { prefs -> prefs[Keys.KEEP_SCREEN_AWAKE] = keepScreenAwake }
     }
 
     /**

@@ -59,6 +59,7 @@
     <string name="error_update_theme_colour">Couldn\'t update theme color.</string>
     <string name="error_update_theme_mode">Couldn\'t update theme mode.</string>
     <string name="error_update_language_mode">Couldn\'t update language mode.</string>
+    <string name="error_update_keep_screen_awake">Couldn\'t update keep screen awake setting.</string>
 
     <!-- Theme modes -->
     <string name="theme_mode_system_default">System default</string>
@@ -75,5 +76,9 @@
     <string name="language_mode_system_default">System default</string>
     <string name="language_mode_english">English</string>
     <string name="language_mode_dutch">Dutch</string>
+
+    <!-- General Settings -->
+    <string name="settings_general">General</string>
+    <string name="settings_keep_screen_awake">Keep screen awake</string>
 
 </resources>

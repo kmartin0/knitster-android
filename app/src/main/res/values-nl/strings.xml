@@ -56,6 +56,7 @@
     <string name="error_update_theme_colour">Het bijwerken van de themakleur is mislukt.</string>
     <string name="error_update_theme_mode">Het bijwerken van de themamodus is mislukt.</string>
     <string name="error_update_language_mode">Het bijwerken van de taal is mislukt.</string>
+    <string name="error_update_keep_screen_awake">Het bijwerken van de instelling scherm aanhouden is mislukt.</string>
 
     <!-- Theme modes -->
     <string name="theme_mode_system_default">Systeem</string>
@@ -72,5 +73,9 @@
     <string name="language_mode_system_default">Systeem</string>
     <string name="language_mode_english">Engels</string>
     <string name="language_mode_dutch">Nederlands</string>
+
+    <!-- General Settings -->
+    <string name="settings_general">Algemeen</string>
+    <string name="settings_keep_screen_awake">Scherm aanhouden</string>
 
 </resources>

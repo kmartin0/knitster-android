@@ -1,7 +1,7 @@
 package nl.kmartin.knitster.main
 
-import nl.kmartin.knitster.theme.ThemeColor
-import nl.kmartin.knitster.theme.ThemeMode
+import nl.kmartin.knitster.data.model.ThemeColor
+import nl.kmartin.knitster.data.model.ThemeMode
 
 data class MainActivityUiState(
     val themeColor: ThemeColor = ThemeColor.DEFAULT,

@@ -5,6 +5,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -25,9 +26,11 @@ internal fun ProjectDetailLastSaved(
     modifier: Modifier = Modifier,
     lastSavedAt: Instant
 ) {
+    val locale = LocalConfiguration.current.locales[0]
+
     Text(
         modifier = modifier.fillMaxWidth(),
-        text = stringResource(R.string.last_saved, lastSavedAt.toFormattedLastSavedString()),
+        text = stringResource(R.string.last_saved, lastSavedAt.toFormattedLastSavedString(locale)),
         textAlign = TextAlign.Center,
         style = MaterialTheme.typography.labelLarge.copy(
             fontFeatureSettings = FontFeatures.TABULAR_NUMS

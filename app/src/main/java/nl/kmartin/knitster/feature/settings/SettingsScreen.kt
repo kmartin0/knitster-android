@@ -25,9 +25,10 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import nl.kmartin.knitster.R
 import nl.kmartin.knitster.data.model.AppSettings
+import nl.kmartin.knitster.data.model.LanguageMode
+import nl.kmartin.knitster.data.model.ThemeColor
+import nl.kmartin.knitster.data.model.ThemeMode
 import nl.kmartin.knitster.theme.Dimensions
-import nl.kmartin.knitster.theme.ThemeColor
-import nl.kmartin.knitster.theme.ThemeMode
 import nl.kmartin.knitster.theme.knitsterTopAppBarColors
 import nl.kmartin.knitster.ui.component.AppBarCircularProgressIndicator
 import nl.kmartin.knitster.ui.component.ObserveSnackbarError
@@ -61,6 +62,7 @@ fun SettingsScreen(
         settings = uiState.settings,
         onThemeColorSelected = viewModel::setThemeColor,
         onThemeModeSelected = viewModel::setThemeMode,
+        onLanguageModeSelected = viewModel::setLanguageMode,
         onBackClick = onNavigateBack
     )
 }
@@ -76,6 +78,7 @@ fun SettingsScreen(
  * @param settings Current application settings, or `null` while they are loading.
  * @param onThemeColorSelected Called when a theme color is selected.
  * @param onThemeModeSelected Called when a brightness mode is selected.
+ * @param onLanguageModeSelected Called when an application language mode is selected.
  * @param onBackClick Called when the back button is clicked.
  */
 @Composable
@@ -85,6 +88,7 @@ private fun SettingsScreenContent(
     settings: AppSettings?,
     onThemeColorSelected: (ThemeColor) -> Unit,
     onThemeModeSelected: (ThemeMode) -> Unit,
+    onLanguageModeSelected: (LanguageMode) -> Unit,
     onBackClick: () -> Unit
 ) {
     Scaffold(
@@ -116,6 +120,11 @@ private fun SettingsScreenContent(
                 ThemeModePicker(
                     currentThemeMode = loadedSettings.themeMode,
                     onThemeModeSelected = onThemeModeSelected
+                )
+
+                LanguagePicker(
+                    currentLanguageMode = loadedSettings.appLocales,
+                    onLanguageModeSelected = onLanguageModeSelected
                 )
             }
         }
@@ -163,12 +172,10 @@ private fun SettingsScreenTopAppBar(
 private fun SettingsScreenContentPreview() {
     SettingsScreenContent(
         snackbarHostState = remember { SnackbarHostState() },
-        settings = AppSettings(
-            themeColor = ThemeColor.DEFAULT,
-            themeMode = ThemeMode.DEFAULT
-        ),
+        settings = AppSettings(),
         onThemeColorSelected = {},
         onThemeModeSelected = {},
+        onLanguageModeSelected = {},
         onBackClick = {}
     )
 }

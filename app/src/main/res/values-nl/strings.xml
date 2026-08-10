@@ -52,8 +52,10 @@
     <string name="settings">Instellingen</string>
     <string name="settings_colour_theme">Kleurthema</string>
     <string name="settings_brightness">Helderheid</string>
+    <string name="settings_language">Taal</string>
     <string name="error_update_theme_colour">Het bijwerken van de themakleur is mislukt.</string>
     <string name="error_update_theme_mode">Het bijwerken van de themamodus is mislukt.</string>
+    <string name="error_update_language_mode">Het bijwerken van de taal is mislukt.</string>
 
     <!-- Theme modes -->
     <string name="theme_mode_system_default">Systeem</string>
@@ -65,5 +67,10 @@
     <string name="theme_color_green">Groen</string>
     <string name="theme_color_blue">Blauw</string>
     <string name="theme_color_pink">Roze</string>
+
+    <!-- Language modes -->
+    <string name="language_mode_system_default">Systeem</string>
+    <string name="language_mode_english">Engels</string>
+    <string name="language_mode_dutch">Nederlands</string>
 
 </resources>

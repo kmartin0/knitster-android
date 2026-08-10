@@ -10,9 +10,10 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import nl.kmartin.knitster.R
+import nl.kmartin.knitster.data.model.LanguageMode
+import nl.kmartin.knitster.data.model.ThemeColor
+import nl.kmartin.knitster.data.model.ThemeMode
 import nl.kmartin.knitster.data.repository.SettingsRepository
-import nl.kmartin.knitster.theme.ThemeColor
-import nl.kmartin.knitster.theme.ThemeMode
 import nl.kmartin.knitster.ui.UiText
 import javax.inject.Inject
 import kotlin.coroutines.cancellation.CancellationException
@@ -22,11 +23,12 @@ private const val TAG = "SettingsViewModel"
 /**
  * Manages the state and user interactions for the settings screen.
  *
- * Observes the persisted application settings from [SettingsRepository] and
+ * Observes the current application settings from [SettingsRepository] and
  * exposes them through [uiState]. Theme changes are persisted immediately,
- * while update failures are exposed through [SettingsUiState.settingsErrorMsg].
+ * while language changes are applied through the application's locale system.
+ * Theme update failures are exposed through [SettingsUiState.settingsErrorMsg].
  *
- * @param settingsRepository Repository used to observe and persist application settings.
+ * @param settingsRepository Repository used to observe and update application settings.
  */
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
@@ -86,6 +88,15 @@ class SettingsViewModel @Inject constructor(
     }
 
     /**
+     * Applies the selected application language mode.
+     *
+     * @param newLanguageMode Language mode to apply.
+     */
+    fun setLanguageMode(newLanguageMode: LanguageMode) {
+        settingsRepository.setLanguageMode(newLanguageMode)
+    }
+
+    /**
      * Clears the pending settings error message.
      */
     fun clearSettingsErrorMsg() {
@@ -93,7 +104,7 @@ class SettingsViewModel @Inject constructor(
     }
 
     /**
-     * Observes persisted application settings and updates the UI state whenever
+     * Observes the current application settings and updates the UI state whenever
      * they change.
      */
     private fun observeAppSettings() {

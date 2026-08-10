@@ -3,14 +3,14 @@ package nl.kmartin.knitster.util
 import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
+import java.time.format.FormatStyle
+import java.util.Locale
 
-private val lastSavedFormatter: DateTimeFormatter =
-    DateTimeFormatter.ofPattern("dd-MM-yyyy 'at' HH:mm:ss")
+fun Instant.toFormattedLastSavedString(locale: Locale): String {
+    val formatter = DateTimeFormatter
+        .ofLocalizedDateTime(FormatStyle.MEDIUM)
+        .withLocale(locale)
 
-/**
- * Formats this instant for display as the project's last saved timestamp.
- */
-fun Instant.toFormattedLastSavedString(): String {
-    return this.atZone(ZoneId.systemDefault())
-        .format(lastSavedFormatter)
+    return atZone(ZoneId.systemDefault())
+        .format(formatter)
 }

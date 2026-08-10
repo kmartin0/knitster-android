@@ -1,26 +1,34 @@
 package nl.kmartin.knitster.data.repository
 
 
+import android.os.Build
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.os.LocaleListCompat
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.combine
+import nl.kmartin.knitster.data.datasource.AppLocaleObserver
 import nl.kmartin.knitster.data.model.AppSettings
-import nl.kmartin.knitster.theme.ThemeColor
-import nl.kmartin.knitster.theme.ThemeMode
+import nl.kmartin.knitster.data.model.LanguageMode
+import nl.kmartin.knitster.data.model.ThemeColor
+import nl.kmartin.knitster.data.model.ThemeMode
+import nl.kmartin.knitster.data.model.toLanguageMode
 import javax.inject.Inject
 import javax.inject.Singleton
 
 /**
- * Persists and exposes the application's settings preferences.
+ * Persists and exposes the application's settings.
  *
- * settings preferences are stored using DataStore and exposed as observable [Flow]
+ * Theme preferences are stored using DataStore, while application locale changes
+ * are observed through [AppLocaleObserver] and applied via [AppCompatDelegate].
  */
 @Singleton
 class SettingsRepository @Inject constructor(
-    private val dataStore: DataStore<Preferences>
+    private val dataStore: DataStore<Preferences>,
+    private val appLocaleObserver: AppLocaleObserver
 ) {
     private object Keys {
         val THEME_COLOR = stringPreferencesKey("theme_color")
@@ -28,22 +36,23 @@ class SettingsRepository @Inject constructor(
     }
 
     /**
-     * Observes the persisted application settings.
-     * Missing preferences fall back to the defaults defined by [AppSettings].
+     * Observes the current application settings.
+     *
+     * Theme preferences are read from DataStore and missing values fall back to the
+     * defaults defined by [AppSettings]. The current language mode is derived from
+     * [AppLocaleObserver].
      *
      * @return A flow that emits the current application settings whenever they change.
      */
     fun observeSettings(): Flow<AppSettings> {
         val defaults = AppSettings()
 
-        return dataStore.data.map { prefs ->
+        return combine(dataStore.data, appLocaleObserver.appLocales) { prefs, locales ->
             AppSettings(
-                themeColor = prefs[Keys.THEME_COLOR]
-                    ?.let(ThemeColor::fromId)
+                themeColor = prefs[Keys.THEME_COLOR]?.let(ThemeColor::fromId)
                     ?: defaults.themeColor,
-                themeMode = prefs[Keys.THEME_MODE]
-                    ?.let(ThemeMode::fromId)
-                    ?: defaults.themeMode
+                themeMode = prefs[Keys.THEME_MODE]?.let(ThemeMode::fromId) ?: defaults.themeMode,
+                appLocales = locales.toLanguageMode()
             )
         }
     }
@@ -64,5 +73,36 @@ class SettingsRepository @Inject constructor(
      */
     suspend fun setThemeMode(themeMode: ThemeMode) {
         dataStore.edit { prefs -> prefs[Keys.THEME_MODE] = themeMode.id }
+    }
+
+    /**
+     * Converts the application locales provided by [AppCompatDelegate] to a [LanguageMode].
+     *
+     * @return The currently selected application language mode.
+     */
+    fun getCurrentLanguageMode(): LanguageMode {
+        return AppCompatDelegate.getApplicationLocales().toLanguageMode()
+    }
+
+    /**
+     * Applies the selected application language mode via [AppCompatDelegate].
+     *
+     * On Android versions below API 33, [AppLocaleObserver] is synchronized
+     * explicitly after the locale change.
+     *
+     * @param languageMode Language mode to apply.
+     */
+    fun setLanguageMode(languageMode: LanguageMode) {
+        if (getCurrentLanguageMode() == languageMode) return
+
+        val localeList = languageMode.localeTag
+            ?.let(LocaleListCompat::forLanguageTags)
+            ?: LocaleListCompat.getEmptyLocaleList()
+
+        AppCompatDelegate.setApplicationLocales(localeList)
+
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+            appLocaleObserver.syncAppLocales()
+        }
     }
 }

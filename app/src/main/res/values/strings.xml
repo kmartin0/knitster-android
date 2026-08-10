@@ -55,18 +55,25 @@
     <string name="settings">Settings</string>
     <string name="settings_colour_theme">Colour Theme</string>
     <string name="settings_brightness">Brightness</string>
+    <string name="settings_language">Language</string>
     <string name="error_update_theme_colour">Couldn\'t update theme color.</string>
     <string name="error_update_theme_mode">Couldn\'t update theme mode.</string>
+    <string name="error_update_language_mode">Couldn\'t update language mode.</string>
 
     <!-- Theme modes -->
     <string name="theme_mode_system_default">System default</string>
     <string name="theme_mode_light">Light</string>
     <string name="theme_mode_dark">Dark</string>
 
-    <!-- Theme colours -->
+    <!-- Theme colors -->
     <string name="theme_color_cream">Cream</string>
     <string name="theme_color_green">Green</string>
     <string name="theme_color_blue">Blue</string>
     <string name="theme_color_pink">Pink</string>
+
+    <!-- Language modes -->
+    <string name="language_mode_system_default">System default</string>
+    <string name="language_mode_english">English</string>
+    <string name="language_mode_dutch">Dutch</string>
 
 </resources>

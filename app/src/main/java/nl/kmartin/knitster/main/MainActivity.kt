@@ -1,11 +1,11 @@
 package nl.kmartin.knitster.main
 
 import android.os.Bundle
-import androidx.activity.ComponentActivity
 import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -15,13 +15,13 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
+import nl.kmartin.knitster.data.model.resolveDarkTheme
 import nl.kmartin.knitster.navigation.AppNavigation
 import nl.kmartin.knitster.theme.KnitsterTheme
-import nl.kmartin.knitster.theme.resolveDarkTheme
 import kotlin.time.Duration.Companion.seconds
 
 @AndroidEntryPoint
-class MainActivity : ComponentActivity() {
+class MainActivity : AppCompatActivity() {
     private val viewModel: MainActivityViewModel by viewModels()
 
     /**

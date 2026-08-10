@@ -32,12 +32,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import nl.kmartin.knitster.R
+import nl.kmartin.knitster.data.model.ThemeColor
+import nl.kmartin.knitster.data.model.ThemeMode
+import nl.kmartin.knitster.data.model.resolveDarkTheme
 import nl.kmartin.knitster.theme.KnitsterBorder
-import nl.kmartin.knitster.theme.ThemeColor
-import nl.kmartin.knitster.theme.ThemeMode
 import nl.kmartin.knitster.theme.colorSchemeFor
 import nl.kmartin.knitster.theme.knitsterBorder
-import nl.kmartin.knitster.theme.resolveDarkTheme
 
 /** Minimum number of columns in the theme color grid. */
 private const val themeColorGridMinColumns = 4

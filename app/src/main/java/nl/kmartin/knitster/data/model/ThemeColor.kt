@@ -1,4 +1,4 @@
-package nl.kmartin.knitster.theme
+package nl.kmartin.knitster.data.model
 
 import androidx.annotation.StringRes
 import nl.kmartin.knitster.R
@@ -16,7 +16,7 @@ enum class ThemeColor(
         val DEFAULT = CREAM
 
         fun fromId(id: String): ThemeColor {
-            return ThemeColor.entries.firstOrNull { it.id == id } ?: DEFAULT
+            return entries.firstOrNull { it.id == id } ?: DEFAULT
         }
     }
 }

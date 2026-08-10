@@ -1,4 +1,4 @@
-package nl.kmartin.knitster.theme
+package nl.kmartin.knitster.data.model
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
@@ -29,7 +29,7 @@ enum class ThemeMode(
         val DEFAULT = SYSTEM
 
         fun fromId(id: String): ThemeMode {
-            return ThemeMode.entries.firstOrNull { it.id == id } ?: DEFAULT
+            return entries.firstOrNull { it.id == id } ?: DEFAULT
         }
     }
 }

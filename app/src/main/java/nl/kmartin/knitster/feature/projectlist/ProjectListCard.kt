@@ -21,6 +21,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
@@ -99,6 +100,8 @@ private fun ProjectCardInfo(
     name: String,
     lastSavedAt: Instant,
 ) {
+    val locale = LocalConfiguration.current.locales[0]
+
     Column(
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(12.dp),
@@ -116,7 +119,7 @@ private fun ProjectCardInfo(
             maxLines = 1
         )
         Text(
-            text = stringResource(R.string.last_saved, lastSavedAt.toFormattedLastSavedString()),
+            text = stringResource(R.string.last_saved, lastSavedAt.toFormattedLastSavedString(locale)),
             style = MaterialTheme.typography.labelMedium.copy(
                 fontFeatureSettings = FontFeatures.TABULAR_NUMS
             ),

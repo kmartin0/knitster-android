@@ -7,6 +7,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import nl.kmartin.knitster.data.model.ThemeColor
+import nl.kmartin.knitster.data.model.ThemeMode
+import nl.kmartin.knitster.data.model.resolveDarkTheme
 import nl.kmartin.knitster.theme.color.BlueDarkScheme
 import nl.kmartin.knitster.theme.color.BlueLightScheme
 import nl.kmartin.knitster.theme.color.CreamDarkScheme

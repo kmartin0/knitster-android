@@ -23,6 +23,7 @@ import nl.kmartin.knitster.data.repository.ProjectRepository
 import nl.kmartin.knitster.navigation.ProjectDetailDestination
 import nl.kmartin.knitster.ui.UiText
 import nl.kmartin.knitster.ui.launchOperation
+import java.util.Collections
 import javax.inject.Inject
 import kotlin.time.Duration.Companion.milliseconds
 
@@ -98,6 +99,78 @@ class ProjectDetailViewModel @Inject constructor(
             },
             logTag = TAG,
             errorLogMsg = "Failed to add row counter to project ${currentProject.id}"
+        )
+    }
+
+    /**
+     * Moves the specified row counter one position toward the start of the displayed list.
+     *
+     * Does nothing if the row counter does not exist or is already the first item.
+     *
+     * @param rowCounterId ID of the row counter to move.
+     */
+    fun moveRowCounterUp(rowCounterId: Long) {
+        val currentProject = _uiState.value.project ?: return
+        val reorderedRowCounterIds = currentProject.rowCounters
+            .toMutableList()
+            .also { rowCounters ->
+                val index = rowCounters.indexOfFirst { it.id == rowCounterId }
+                if (index <= 0) return
+
+                Collections.swap(rowCounters, index, index - 1)
+            }
+            .map { it.id }
+
+        launchOperation(
+            operation = {
+                projectRepository.updateRowCounterOrder(
+                    projectId = currentProject.id,
+                    rowCounterIds = reorderedRowCounterIds
+                )
+            },
+            onError = {
+                _uiState.update {
+                    it.copy(saveProjectErrorMsg = UiText.Resource(R.string.error_save_project))
+                }
+            },
+            logTag = TAG,
+            errorLogMsg = "Failed to move row counter up for project ${currentProject.id}"
+        )
+    }
+
+    /**
+     * Moves the specified row counter one position toward the end of the displayed list.
+     *
+     * Does nothing if the row counter does not exist or is already the last item.
+     *
+     * @param rowCounterId ID of the row counter to move.
+     */
+    fun moveRowCounterDown(rowCounterId: Long) {
+        val currentProject = _uiState.value.project ?: return
+        val reorderedRowCounterIds = currentProject.rowCounters
+            .toMutableList()
+            .also { rowCounters ->
+                val index = rowCounters.indexOfFirst { it.id == rowCounterId }
+                if (index < 0 || index == rowCounters.lastIndex) return
+
+                Collections.swap(rowCounters, index, index + 1)
+            }
+            .map { it.id }
+
+        launchOperation(
+            operation = {
+                projectRepository.updateRowCounterOrder(
+                    projectId = currentProject.id,
+                    rowCounterIds = reorderedRowCounterIds
+                )
+            },
+            onError = {
+                _uiState.update {
+                    it.copy(saveProjectErrorMsg = UiText.Resource(R.string.error_save_project))
+                }
+            },
+            logTag = TAG,
+            errorLogMsg = "Failed to move row counter down for project ${currentProject.id}"
         )
     }
 

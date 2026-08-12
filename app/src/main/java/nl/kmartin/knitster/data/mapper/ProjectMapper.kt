@@ -30,7 +30,7 @@ fun ProjectEntityRelation.toModel(): Project =
         name = project.name,
         icon = project.icon,
         notes = project.notes,
-        rowCounters = rowCounters.sortedByDescending { it.id }.map { it.toModel() },
+        rowCounters = rowCounters.sortedBy { it.position }.map { it.toModel() },
         lastSavedAt = project.lastSavedAt,
         createdAt = project.createdAt
     )

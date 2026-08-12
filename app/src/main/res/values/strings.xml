@@ -39,6 +39,8 @@
     <string name="edit_counter">Edit counter</string>
     <string name="delete_counter">Delete counter</string>
     <string name="reset_counter">Reset counter</string>
+    <string name="move_counter_up">Move up</string>
+    <string name="move_counter_down">Move down</string>
     <string name="increment_counter">Increment counter</string>
     <string name="decrement_counter">Decrement counter</string>
     <string name="row_counter_options">Row counter options</string>

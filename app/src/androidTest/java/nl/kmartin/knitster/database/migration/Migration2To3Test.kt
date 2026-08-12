@@ -43,13 +43,14 @@ class Migration2To3Test {
         // Verify the data migrated correctly: the old rowCount should now
         // exist as a single row counter with the default name and no target.
         val cursor = db.query(
-            "SELECT projectId, name, count, target FROM row_counters WHERE projectId = 1"
+            "SELECT projectId, name, count, target, position FROM row_counters WHERE projectId = 1"
         )
         assertTrue(cursor.moveToFirst())
         assertEquals(1L, cursor.getLong(0))
         assertEquals("Row Counter", cursor.getString(1))
         assertEquals(42, cursor.getInt(2))
         assertTrue(cursor.isNull(3))
+        assertEquals(0, cursor.getInt(4))
 
         // Confirm the old rowCount column was actually dropped from projects
         val columns = db.query("PRAGMA table_info(projects)").use { cursor ->

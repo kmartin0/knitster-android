@@ -5,7 +5,6 @@ import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
 
-
 @Entity(
     tableName = "row_counters",
     foreignKeys = [
@@ -23,5 +22,6 @@ data class RowCounterEntity(
     val projectId: Long,
     val name: String = "",
     val count: Int = 0,
-    val target: Int? = null
+    val target: Int? = null,
+    val position: Int = 0
 )

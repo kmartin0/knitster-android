@@ -140,6 +140,8 @@ fun ProjectDetailScreen(
         snackbarHostState = snackbarHostState,
         onBackClick = onNavigateBack,
         onDeleteClick = { showDeleteProjectDialog = true },
+        onMoveCounterUpClick = viewModel::moveRowCounterUp,
+        onMoveCounterDownClick = viewModel::moveRowCounterDown,
         onResetCounterClick = viewModel::resetRowCounter,
         onEditCounterClick = { pendingEditRowCounterId = it },
         onDeleteCounterClick = { pendingDeleteRowCounterId = it },

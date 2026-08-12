@@ -73,7 +73,11 @@ class ProjectRepository @Inject constructor(
         rowCounter: RowCounter
     ) {
         appDatabase.withTransaction {
-            val id = rowCounterDao.insert(rowCounter.copy(id = 0L).toEntity(projectId))
+            rowCounterDao.incrementPositions(projectId)
+
+            val id = rowCounterDao.insert(
+                rowCounter.copy(id = 0L, position = 0).toEntity(projectId)
+            )
             check(id > 0) { "Row counter was not added to project $projectId." }
 
             projectDao.updateLastSaved(id = projectId, lastSavedAt = Instant.now())
@@ -84,6 +88,23 @@ class ProjectRepository @Inject constructor(
         appDatabase.withTransaction {
             val updatedRows = rowCounterDao.update(rowCounter.toEntity(projectId))
             check(updatedRows > 0) { "Row counter ${rowCounter.id} was not updated." }
+
+            projectDao.updateLastSaved(projectId, Instant.now())
+        }
+    }
+
+    suspend fun updateRowCounterOrder(
+        projectId: Long,
+        rowCounterIds: List<Long>
+    ) {
+        appDatabase.withTransaction {
+            rowCounterIds.forEachIndexed { position, rowCounterId ->
+                val updatedRows = rowCounterDao.updatePosition(rowCounterId, position)
+
+                check(updatedRows > 0) {
+                    "Row counter $rowCounterId position was not updated."
+                }
+            }
 
             projectDao.updateLastSaved(projectId, Instant.now())
         }

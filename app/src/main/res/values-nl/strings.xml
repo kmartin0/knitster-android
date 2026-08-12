@@ -36,6 +36,8 @@
     <string name="edit_counter">Teller bewerken</string>
     <string name="delete_counter">Teller verwijderen</string>
     <string name="reset_counter">Teller resetten</string>
+    <string name="move_counter_up">Naar boven</string>
+    <string name="move_counter_down">Naar beneden</string>
     <string name="increment_counter">Teller verhogen</string>
     <string name="decrement_counter">Teller verlagen</string>
     <string name="row_counter_options">Opties voor rijteller</string>

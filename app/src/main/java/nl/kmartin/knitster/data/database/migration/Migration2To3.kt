@@ -22,6 +22,7 @@ val MIGRATION_2_3 = object : Migration(2, 3) {
                 name TEXT NOT NULL,
                 count INTEGER NOT NULL,
                 target INTEGER,
+                position INTEGER NOT NULL,
                 FOREIGN KEY(projectId) REFERENCES projects(id) ON DELETE CASCADE
             )
             """.trimIndent()
@@ -33,8 +34,8 @@ val MIGRATION_2_3 = object : Migration(2, 3) {
         // 2. turn each project's existing rowCount into a single row counter with name "Row Counter" and no target.
         db.execSQL(
             """
-            INSERT INTO row_counters (projectId, name, count, target)
-            SELECT id, 'Row Counter', rowCount, NULL FROM projects
+            INSERT INTO row_counters (projectId, name, count, target, position)
+            SELECT id, 'Row Counter', rowCount, NULL, 0 FROM projects
             """.trimIndent()
         )
 

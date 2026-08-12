@@ -2,8 +2,8 @@ package nl.kmartin.knitster.feature.projectdetail
 
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
@@ -14,10 +14,9 @@ import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.foundation.text.input.rememberTextFieldState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -32,9 +31,9 @@ import nl.kmartin.knitster.data.model.Project
 import nl.kmartin.knitster.data.model.RowCounter
 import nl.kmartin.knitster.feature.projectdetail.component.ProjectDetailLastSaved
 import nl.kmartin.knitster.feature.projectdetail.component.ProjectDetailNotes
-import nl.kmartin.knitster.feature.projectdetail.component.ProjectDetailRowCounterSection
 import nl.kmartin.knitster.feature.projectdetail.component.ProjectDetailTitleSection
 import nl.kmartin.knitster.feature.projectdetail.component.ProjectDetailTopAppBar
+import nl.kmartin.knitster.feature.projectdetail.component.projectDetailRowCounterSection
 import nl.kmartin.knitster.theme.Dimensions
 import java.time.Instant
 
@@ -49,8 +48,14 @@ private val minimumRegularContentHeight = 310.dp
  * @param onBackClick Called when the back button is clicked.
  * @param onDeleteClick Called when the delete button is clicked.
  * @param onResetCounterClick Called when the reset button is clicked.
+ * @param onEditCounterClick Called when the row counter is edited.
+ * @param onMoveCounterUpClick  Called when the row counter Move Up action is selected.
+ * @param onMoveCounterDownClick  Called when the row counter Move Down action is selected.
+ * @param onDeleteCounterClick Called when the row counter is deleted.
  * @param onIncrementClick Called when the row counter is incremented.
  * @param onDecrementClick Called when the row counter is decremented.
+ * @param onAddRowCounterClick Called when a new row counter should be added.
+ * @param onProjectIconClick Called when the project icon is clicked.
  * @param projectNameState State backing the project name text field.
  * @param projectNotesState State backing the project notes text field.
  */
@@ -62,6 +67,8 @@ fun ProjectDetailScreenContent(
     snackbarHostState: SnackbarHostState,
     onBackClick: () -> Unit,
     onDeleteClick: () -> Unit,
+    onMoveCounterUpClick: (Long) -> Unit,
+    onMoveCounterDownClick: (Long) -> Unit,
     onResetCounterClick: (Long) -> Unit,
     onEditCounterClick: (Long) -> Unit,
     onDeleteCounterClick: (Long) -> Unit,
@@ -108,41 +115,56 @@ fun ProjectDetailScreenContent(
             }
         }
     ) { innerPadding ->
-        if (!uiState.isLoadingProject && uiState.project != null) {
-            BoxWithConstraints(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(innerPadding)
-                    .padding(Dimensions.ScreenPadding)
-            ) {
-                val isCompact = maxHeight < minimumRegularContentHeight
-
-                Column(
+        if (!uiState.isLoadingProject) {
+            uiState.project?.let { project ->
+                BoxWithConstraints(
                     modifier = Modifier
                         .fillMaxSize()
-                        .verticalScroll(rememberScrollState()),
-                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                        .padding(innerPadding)
+                        .padding(Dimensions.ScreenPadding)
                 ) {
-                    ProjectDetailTitleSection(
-                        projectNameState = projectNameState,
-                        onProjectIconClick = onProjectIconClick,
-                        projectIcon = uiState.project.icon
-                    )
-                    ProjectDetailNotes(
-                        modifier = Modifier,
-                        projectNotesState = projectNotesState,
-                        minHeightInLines = if (isCompact) 1 else 4,
-                        maxHeightInLines = if (isCompact) 3 else 8
-                    )
-                    ProjectDetailRowCounterSection(
-                        rowCounters = uiState.project.rowCounters,
-                        onIncrementClick = onIncrementClick,
-                        onDecrementClick = onDecrementClick,
-                        onResetClick = onResetCounterClick,
-                        onEditClick = onEditCounterClick,
-                        onDeleteClick = onDeleteCounterClick,
-                        onAddRowCounterClick = onAddRowCounterClick
-                    )
+                    val isCompact = maxHeight < minimumRegularContentHeight
+
+                    LazyColumn(
+                        modifier = Modifier.fillMaxSize(),
+                        verticalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+                        item {
+                            Box(
+                                modifier = Modifier.padding(bottom = 4.dp)
+                            ) {
+                                ProjectDetailTitleSection(
+                                    projectNameState = projectNameState,
+                                    onProjectIconClick = onProjectIconClick,
+                                    projectIcon = project.icon
+                                )
+                            }
+                        }
+
+                        item {
+                            Box(
+                                modifier = Modifier.padding(bottom = 4.dp)
+                            ) {
+                                ProjectDetailNotes(
+                                    projectNotesState = projectNotesState,
+                                    minHeightInLines = if (isCompact) 1 else 4,
+                                    maxHeightInLines = if (isCompact) 3 else 8
+                                )
+                            }
+                        }
+
+                        projectDetailRowCounterSection(
+                            rowCounters = project.rowCounters,
+                            onIncrementClick = onIncrementClick,
+                            onDecrementClick = onDecrementClick,
+                            onMoveUpClick = onMoveCounterUpClick,
+                            onMoveDownClick = onMoveCounterDownClick,
+                            onResetClick = onResetCounterClick,
+                            onEditClick = onEditCounterClick,
+                            onDeleteClick = onDeleteCounterClick,
+                            onAddRowCounterClick = onAddRowCounterClick
+                        )
+                    }
                 }
             }
         }
@@ -160,7 +182,9 @@ private fun ProjectDetailScreenContentPreview() {
                 id = 1,
                 name = "Blue winter sweater",
                 notes = "Using 4 mm needles. Repeat the cable pattern every eight rows.",
-                rowCounters = listOf(RowCounter(1, "Row Counter", 42)),
+                rowCounters = listOf(
+                    RowCounter(1, "Row Counter", 42)
+                ),
                 lastSavedAt = Instant.parse("2026-07-23T14:35:00Z"),
                 createdAt = Instant.parse("2026-07-23T14:30:00Z")
             ),
@@ -180,6 +204,8 @@ private fun ProjectDetailScreenContentPreview() {
         projectNotesState = rememberTextFieldState(
             initialText = "Using 4 mm needles. Repeat the cable pattern every eight rows.",
         ),
-        onAddRowCounterClick = {}
+        onAddRowCounterClick = {},
+        onMoveCounterUpClick = {},
+        onMoveCounterDownClick = {}
     )
 }

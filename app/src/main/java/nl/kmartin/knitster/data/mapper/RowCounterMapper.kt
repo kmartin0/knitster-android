@@ -8,7 +8,8 @@ fun RowCounterEntity.toModel(): RowCounter =
         id = id,
         name = name,
         count = count,
-        target = target
+        target = target,
+        position = position
     )
 
 fun RowCounter.toEntity(projectId: Long): RowCounterEntity =
@@ -17,5 +18,6 @@ fun RowCounter.toEntity(projectId: Long): RowCounterEntity =
         projectId = projectId,
         name = name,
         count = count,
-        target = target
+        target = target,
+        position = position
     )

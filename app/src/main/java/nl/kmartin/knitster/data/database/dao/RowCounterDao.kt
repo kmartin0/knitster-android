@@ -18,6 +18,12 @@ interface RowCounterDao {
     @Query("UPDATE row_counters SET count = :count WHERE id = :id")
     suspend fun updateCount(id: Long, count: Int): Int
 
+    @Query("UPDATE row_counters SET position = :position WHERE id = :id")
+    suspend fun updatePosition(id: Long, position: Int): Int
+
+    @Query("UPDATE row_counters SET position = position + 1 WHERE projectId = :projectId")
+    suspend fun incrementPositions(projectId: Long)
+
     @Delete
     suspend fun delete(rowCounter: RowCounterEntity): Int
 }

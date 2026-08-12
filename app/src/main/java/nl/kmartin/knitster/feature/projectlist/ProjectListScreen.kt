@@ -181,7 +181,7 @@ private fun ProjectListTopAppBar(
                 shape = KnitsterBorder.Shape
             ) {
                 Icon(
-                    painter = painterResource(R.drawable.ic_add),
+                    painter = painterResource(R.drawable.ic_plus),
                     contentDescription = stringResource(R.string.create_project)
                 )
             }

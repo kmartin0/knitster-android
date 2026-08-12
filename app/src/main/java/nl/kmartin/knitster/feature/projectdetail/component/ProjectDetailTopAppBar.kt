@@ -77,6 +77,12 @@ private fun ProjectDetailOverflowMenu(
             onDismissRequest = { showMenu = false },
         ) {
             DropdownMenuItem(
+                leadingIcon = {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_delete),
+                        contentDescription = null
+                    )
+                },
                 text = { Text(stringResource(R.string.delete_project)) },
                 onClick = {
                     showMenu = false

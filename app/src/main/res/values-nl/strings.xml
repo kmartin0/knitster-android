@@ -59,6 +59,7 @@
     <string name="error_update_theme_mode">Het bijwerken van de themamodus is mislukt.</string>
     <string name="error_update_language_mode">Het bijwerken van de taal is mislukt.</string>
     <string name="error_update_keep_screen_awake">Het bijwerken van de instelling scherm aanhouden is mislukt.</string>
+    <string name="settings_app_version">Versie %1$s &#183; KM</string>
 
     <!-- Theme modes -->
     <string name="theme_mode_system_default">Systeem</string>

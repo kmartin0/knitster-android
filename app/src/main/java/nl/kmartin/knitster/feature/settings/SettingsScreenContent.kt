@@ -13,12 +13,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import nl.kmartin.knitster.BuildConfig
 import nl.kmartin.knitster.data.model.AppSettings
 import nl.kmartin.knitster.data.model.LanguageMode
 import nl.kmartin.knitster.data.model.ThemeColor
 import nl.kmartin.knitster.data.model.ThemeMode
 import nl.kmartin.knitster.feature.settings.component.GeneralSettings
 import nl.kmartin.knitster.feature.settings.component.LanguagePicker
+import nl.kmartin.knitster.feature.settings.component.SettingsAppInfo
 import nl.kmartin.knitster.feature.settings.component.SettingsScreenTopAppBar
 import nl.kmartin.knitster.feature.settings.component.ThemeColorPicker
 import nl.kmartin.knitster.feature.settings.component.ThemeModePicker
@@ -89,6 +91,10 @@ internal fun SettingsScreenContent(
                 GeneralSettings(
                     keepScreenAwake = loadedSettings.keepScreenAwake,
                     onKeepScreenAwakeChanged = onKeepScreenAwakeChanged
+                )
+
+                SettingsAppInfo(
+                    versionName = BuildConfig.VERSION_NAME
                 )
             }
         }

@@ -1,4 +1,4 @@
-package nl.kmartin.knitster.feature.settings
+package nl.kmartin.knitster.feature.settings.component
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -23,7 +23,7 @@ import nl.kmartin.knitster.data.model.ThemeMode
  * @param onThemeModeSelected Called when a brightness mode is selected.
  */
 @Composable
-fun ThemeModePicker(
+internal fun ThemeModePicker(
     currentThemeMode: ThemeMode,
     onThemeModeSelected: (ThemeMode) -> Unit
 ) {

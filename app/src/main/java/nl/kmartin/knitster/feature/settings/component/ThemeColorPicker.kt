@@ -1,4 +1,4 @@
-package nl.kmartin.knitster.feature.settings
+package nl.kmartin.knitster.feature.settings.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -61,7 +61,7 @@ private val themeColorGridItemSpacing = 8.dp
  * @param onThemeColorSelected Called when a color theme is selected.
  */
 @Composable
-fun ThemeColorPicker(
+internal fun ThemeColorPicker(
     currentThemeColor: ThemeColor,
     currentThemeMode: ThemeMode,
     onThemeColorSelected: (ThemeColor) -> Unit,

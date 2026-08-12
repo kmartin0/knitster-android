@@ -61,7 +61,7 @@ private val minimumRegularContentHeight = 310.dp
  */
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun ProjectDetailScreenContent(
+internal fun ProjectDetailScreenContent(
     modifier: Modifier = Modifier,
     uiState: ProjectDetailUiState,
     snackbarHostState: SnackbarHostState,

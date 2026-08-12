@@ -1,4 +1,4 @@
-package nl.kmartin.knitster.feature.projectlist
+package nl.kmartin.knitster.feature.projectlist.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -38,8 +38,17 @@ import nl.kmartin.knitster.theme.knitsterBorder
 import nl.kmartin.knitster.util.toFormattedLastSavedString
 import java.time.Instant
 
+/**
+ * Displays a project as a clickable card.
+ *
+ * Shows the project icon, name, last-saved time, and a navigation chevron.
+ *
+ * @param modifier Modifier to be applied to the card.
+ * @param project Project to display.
+ * @param onClick Called when the card is clicked.
+ */
 @Composable
-fun ProjectCard(
+internal fun ProjectCard(
     modifier: Modifier = Modifier,
     project: Project,
     onClick: () -> Unit
@@ -73,6 +82,11 @@ fun ProjectCard(
     }
 }
 
+/**
+ * Displays the project icon within the project card.
+ *
+ * @param iconRes Drawable resource representing the project icon.
+ */
 @Composable
 private fun ProjectCardIcon(iconRes: Int) {
     Box(
@@ -94,6 +108,13 @@ private fun ProjectCardIcon(iconRes: Int) {
     }
 }
 
+/**
+ * Displays the project name and last-saved time.
+ *
+ * @param modifier Modifier to be applied to the root layout.
+ * @param name Project name to display.
+ * @param lastSavedAt Time at which the project was last saved.
+ */
 @Composable
 private fun ProjectCardInfo(
     modifier: Modifier = Modifier,
@@ -135,6 +156,11 @@ private fun ProjectCardInfo(
     }
 }
 
+/**
+ * Displays the navigation chevron for the project card.
+ *
+ * @param modifier Modifier to be applied to the root layout.
+ */
 @Composable
 private fun ProjectCardChevron(
     modifier: Modifier = Modifier,

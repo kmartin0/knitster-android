@@ -1,4 +1,4 @@
-package nl.kmartin.knitster.feature.settings
+package nl.kmartin.knitster.feature.settings.component
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -11,8 +11,14 @@ import androidx.compose.ui.unit.dp
 import nl.kmartin.knitster.R
 import nl.kmartin.knitster.data.model.LanguageMode
 
+/**
+ * Displays the available language options and allows selecting the application language.
+ *
+ * @param currentLanguageMode Currently selected language mode.
+ * @param onLanguageModeSelected Called with the language mode selected by the user.
+ */
 @Composable
-fun LanguagePicker(
+internal fun LanguagePicker(
     currentLanguageMode: LanguageMode,
     onLanguageModeSelected: (LanguageMode) -> Unit
 ) {

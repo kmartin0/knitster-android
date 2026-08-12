@@ -1,4 +1,4 @@
-package nl.kmartin.knitster.ui
+package nl.kmartin.knitster.ui.model
 
 import androidx.annotation.StringRes
 import androidx.compose.runtime.Composable

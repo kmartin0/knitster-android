@@ -34,7 +34,7 @@ import nl.kmartin.knitster.feature.projectdetail.component.ProjectDetailNotes
 import nl.kmartin.knitster.feature.projectdetail.component.ProjectDetailTitleSection
 import nl.kmartin.knitster.feature.projectdetail.component.ProjectDetailTopAppBar
 import nl.kmartin.knitster.feature.projectdetail.component.projectDetailRowCounterSection
-import nl.kmartin.knitster.theme.Dimensions
+import nl.kmartin.knitster.theme.KnitsterDimensions
 import java.time.Instant
 
 private val minimumRegularContentHeight = 310.dp
@@ -121,7 +121,7 @@ internal fun ProjectDetailScreenContent(
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(innerPadding)
-                        .padding(Dimensions.ScreenPadding)
+                        .padding(KnitsterDimensions.ScreenPadding)
                 ) {
                     val isCompact = maxHeight < minimumRegularContentHeight
 

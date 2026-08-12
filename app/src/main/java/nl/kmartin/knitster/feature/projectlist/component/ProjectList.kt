@@ -9,7 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import nl.kmartin.knitster.data.model.Project
-import nl.kmartin.knitster.theme.Dimensions
+import nl.kmartin.knitster.theme.KnitsterDimensions
 
 /**
  * Displays the projects in a vertically scrolling list.
@@ -31,7 +31,7 @@ internal fun ProjectList(
     LazyColumn(
         modifier = modifier,
         state = listState,
-        contentPadding = PaddingValues(Dimensions.ScreenPadding),
+        contentPadding = PaddingValues(KnitsterDimensions.ScreenPadding),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         items(
@@ -39,6 +39,7 @@ internal fun ProjectList(
             key = { project -> project.id }
         ) { project ->
             ProjectCard(
+                modifier = Modifier.animateItem(),
                 project = project,
                 onClick = { onProjectClick(project.id) }
             )

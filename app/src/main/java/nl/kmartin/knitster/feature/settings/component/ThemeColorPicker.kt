@@ -191,7 +191,9 @@ private fun ThemeColorItem(
         modifier = modifier
             .knitsterBorder(
                 color = previewScheme.secondary,
-                width = if (isSelected) KnitsterBorder.Width * 2 else KnitsterBorder.Width
+                width =
+                    if (isSelected) KnitsterBorder.Width * 2
+                    else KnitsterBorder.Width
             )
             .clickable(
                 onClick = onClick,

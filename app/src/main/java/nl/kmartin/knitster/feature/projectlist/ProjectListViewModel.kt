@@ -10,8 +10,9 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import nl.kmartin.knitster.R
 import nl.kmartin.knitster.data.repository.ProjectRepository
-import nl.kmartin.knitster.ui.UiText
-import nl.kmartin.knitster.ui.launchOperation
+import nl.kmartin.knitster.ui.model.UiText
+import nl.kmartin.knitster.ui.viewmodel.MviViewModel
+import nl.kmartin.knitster.ui.viewmodel.launchOperation
 import javax.inject.Inject
 
 private const val TAG = "ProjectListViewModel"
@@ -19,13 +20,27 @@ private const val TAG = "ProjectListViewModel"
 @HiltViewModel
 class ProjectListViewModel @Inject constructor(
     private val projectRepository: ProjectRepository,
-) : ViewModel() {
+) : ViewModel(),
+    MviViewModel<ProjectListUiState, ProjectListIntent> {
 
     private val _uiState = MutableStateFlow(ProjectListUiState(isLoadingProjects = true))
-    val uiState: StateFlow<ProjectListUiState> = _uiState.asStateFlow()
+    override val uiState: StateFlow<ProjectListUiState> = _uiState.asStateFlow()
 
     init {
         observeProjects()
+    }
+
+    /**
+     * Handles a [ProjectListIntent] by dispatching it to the appropriate action.
+     *
+     * @param intent Intent representing a user interaction or handled UI event.
+     */
+    override fun onIntent(intent: ProjectListIntent) {
+        when (intent) {
+            ProjectListIntent.CreateProject -> createNewProject()
+            ProjectListIntent.CreateProjectErrorDismissed -> clearCreateProjectErrorMsg()
+            ProjectListIntent.CreatedProjectHandled -> clearCreatedProjectId()
+        }
     }
 
     /**
@@ -34,7 +49,7 @@ class ProjectListViewModel @Inject constructor(
      * Creation errors are exposed through [ProjectListUiState.createProjectErrorMsg]
      * and cleared via [clearCreateProjectErrorMsg].
      */
-    fun createNewProject() {
+    private fun createNewProject() {
         _uiState.update { it.copy(isCreatingProject = true) }
 
         launchOperation(
@@ -58,14 +73,14 @@ class ProjectListViewModel @Inject constructor(
     /**
      * Clears the project creation error message.
      */
-    fun clearCreateProjectErrorMsg() {
+    private fun clearCreateProjectErrorMsg() {
         _uiState.update { it.copy(createProjectErrorMsg = null) }
     }
 
     /**
      * Clears the created project ID.
      */
-    fun clearCreatedProjectId() {
+    private fun clearCreatedProjectId() {
         _uiState.update { it.copy(createdProjectId = null) }
     }
 

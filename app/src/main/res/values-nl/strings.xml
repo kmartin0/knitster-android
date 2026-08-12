@@ -43,7 +43,7 @@
     <string name="row_counter_options">Opties voor rijteller</string>
 
     <string name="name">Naam</string>
-    <string name="count">Aantal</string>
+    <string name="count">Telling</string>
     <string name="target_optional">Doel (optioneel)</string>
 
     <string name="delete_row_counter_title">%1$s (%2$d) verwijderen?</string>

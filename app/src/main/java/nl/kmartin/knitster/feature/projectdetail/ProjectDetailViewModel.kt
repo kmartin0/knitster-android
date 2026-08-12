@@ -21,8 +21,9 @@ import nl.kmartin.knitster.data.model.ProjectIcon
 import nl.kmartin.knitster.data.model.RowCounter
 import nl.kmartin.knitster.data.repository.ProjectRepository
 import nl.kmartin.knitster.navigation.ProjectDetailDestination
-import nl.kmartin.knitster.ui.UiText
-import nl.kmartin.knitster.ui.launchOperation
+import nl.kmartin.knitster.ui.model.UiText
+import nl.kmartin.knitster.ui.viewmodel.MviViewModel
+import nl.kmartin.knitster.ui.viewmodel.launchOperation
 import java.util.Collections
 import javax.inject.Inject
 import kotlin.time.Duration.Companion.milliseconds
@@ -45,12 +46,13 @@ private const val TAG = "ProjectDetailViewModel"
 class ProjectDetailViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val projectRepository: ProjectRepository
-) : ViewModel() {
+) : ViewModel(),
+    MviViewModel<ProjectDetailUiState, ProjectDetailIntent>{
     private val projectId: Long = savedStateHandle.toRoute<ProjectDetailDestination>().projectId
     private val _uiState = MutableStateFlow(ProjectDetailUiState(isLoadingProject = true))
 
     /** Current state of the project detail screen. */
-    val uiState: StateFlow<ProjectDetailUiState> = _uiState.asStateFlow()
+    override val uiState: StateFlow<ProjectDetailUiState> = _uiState.asStateFlow()
 
     /** State backing the editable project name field. */
     val projectNameState = TextFieldState()
@@ -78,11 +80,36 @@ class ProjectDetailViewModel @Inject constructor(
     }
 
     /**
+     * Handles a [ProjectDetailIntent] by dispatching it to the appropriate project action.
+     *
+     * @param intent Intent representing a user interaction or handled UI event.
+     */
+    override fun onIntent(intent: ProjectDetailIntent) {
+        when (intent) {
+            ProjectDetailIntent.SaveProjectErrorDismissed -> clearSaveProjectErrorShown()
+            ProjectDetailIntent.DeleteProjectErrorDismissed -> clearDeleteProjectErrorMsg()
+            ProjectDetailIntent.DeleteProject -> deleteProject()
+            ProjectDetailIntent.UndoResetRowCounter -> undoResetRowCounter()
+            ProjectDetailIntent.ResetRowCounterUndoDismissed -> clearUndoResetRowCounter()
+            ProjectDetailIntent.ProjectDeletedHandled -> clearProjectDeleted()
+            is ProjectDetailIntent.DeleteRowCounter -> deleteRowCounter(intent.rowCounterId)
+            is ProjectDetailIntent.UpdateRowCounter -> updateRowCounter(intent.rowCounter)
+            is ProjectDetailIntent.AddRowCounter -> addRowCounter(intent.rowCounter)
+            is ProjectDetailIntent.UpdateProjectIcon -> updateProjectIcon(intent.projectIcon)
+            is ProjectDetailIntent.MoveRowCounterUp -> moveRowCounterUp(intent.rowCounterId)
+            is ProjectDetailIntent.MoveRowCounterDown -> moveRowCounterDown(intent.rowCounterId)
+            is ProjectDetailIntent.ResetRowCounter -> resetRowCounter(intent.rowCounterId)
+            is ProjectDetailIntent.IncrementRowCounter -> incrementRowCounter(intent.rowCounterId)
+            is ProjectDetailIntent.DecrementRowCounter -> decrementRowCounter(intent.rowCounterId)
+        }
+    }
+
+    /**
      * Adds a new row counter to the current project.
      *
      * @param rowCounter Row counter to add.
      */
-    fun addRowCounter(rowCounter: RowCounter) {
+    private fun addRowCounter(rowCounter: RowCounter) {
         val currentProject = _uiState.value.project ?: return
 
         launchOperation(
@@ -109,7 +136,7 @@ class ProjectDetailViewModel @Inject constructor(
      *
      * @param rowCounterId ID of the row counter to move.
      */
-    fun moveRowCounterUp(rowCounterId: Long) {
+    private fun moveRowCounterUp(rowCounterId: Long) {
         val currentProject = _uiState.value.project ?: return
         val reorderedRowCounterIds = currentProject.rowCounters
             .toMutableList()
@@ -145,7 +172,7 @@ class ProjectDetailViewModel @Inject constructor(
      *
      * @param rowCounterId ID of the row counter to move.
      */
-    fun moveRowCounterDown(rowCounterId: Long) {
+    private fun moveRowCounterDown(rowCounterId: Long) {
         val currentProject = _uiState.value.project ?: return
         val reorderedRowCounterIds = currentProject.rowCounters
             .toMutableList()
@@ -179,7 +206,7 @@ class ProjectDetailViewModel @Inject constructor(
      *
      * @param rowCounterId ID of the row counter to increment.
      */
-    fun incrementRowCounter(rowCounterId: Long) {
+    private fun incrementRowCounter(rowCounterId: Long) {
         val (currentProject, rowCounter) = findRowCounter(rowCounterId) ?: return
 
         launchOperation(
@@ -206,7 +233,7 @@ class ProjectDetailViewModel @Inject constructor(
      *
      * @param rowCounterId ID of the row counter to decrement.
      */
-    fun decrementRowCounter(rowCounterId: Long) {
+    private fun decrementRowCounter(rowCounterId: Long) {
         val (currentProject, rowCounter) = findRowCounter(rowCounterId) ?: return
         if (rowCounter.count <= 0) return
 
@@ -236,7 +263,7 @@ class ProjectDetailViewModel @Inject constructor(
      *
      * @param rowCounterId ID of the row counter to reset.
      */
-    fun resetRowCounter(rowCounterId: Long) {
+    private fun resetRowCounter(rowCounterId: Long) {
         val (currentProject, rowCounter) = findRowCounter(rowCounterId) ?: return
         val previousCount = rowCounter.count
         if (previousCount == 0) return
@@ -273,7 +300,7 @@ class ProjectDetailViewModel @Inject constructor(
      * Restores the row counter value saved by the most recent reset operation.
      * The operation is ignored when no reset is available to undo.
      */
-    fun undoResetRowCounter() {
+    private fun undoResetRowCounter() {
         val undoResetRowCounter = _uiState.value.undoResetRowCounter ?: return
         val currentProject = _uiState.value.project ?: return
 
@@ -301,7 +328,7 @@ class ProjectDetailViewModel @Inject constructor(
     /**
      * Clears the stored row count used for undoing a reset.
      */
-    fun clearUndoResetRowCounter() {
+    private fun clearUndoResetRowCounter() {
         _uiState.update { it.copy(undoResetRowCounter = null) }
     }
 
@@ -310,7 +337,7 @@ class ProjectDetailViewModel @Inject constructor(
      *
      * @param rowCounterId ID of the row counter to delete.
      */
-    fun deleteRowCounter(rowCounterId: Long) {
+    private fun deleteRowCounter(rowCounterId: Long) {
         val (currentProject, rowCounter) = findRowCounter(rowCounterId) ?: return
 
         launchOperation(
@@ -335,7 +362,7 @@ class ProjectDetailViewModel @Inject constructor(
      *
      * @param rowCounter Updated row-counter data.
      */
-    fun updateRowCounter(rowCounter: RowCounter) {
+    private fun updateRowCounter(rowCounter: RowCounter) {
         val currentProject = _uiState.value.project ?: return
 
         launchOperation(
@@ -361,7 +388,7 @@ class ProjectDetailViewModel @Inject constructor(
      * The project is expected to exist, so deleting zero rows is treated as an error.
      * Delete errors are exposed through the UI state.
      */
-    fun deleteProject() {
+    private fun deleteProject() {
         val currentProject = _uiState.value.project ?: return
 
         launchOperation(
@@ -388,11 +415,18 @@ class ProjectDetailViewModel @Inject constructor(
     }
 
     /**
+     * Clears the flag indicating that the current project has been deleted.
+     */
+    private fun clearProjectDeleted() {
+        _uiState.update { it.copy(projectDeleted = false) }
+    }
+
+    /**
      * Updates the icon of the current project.
      *
      * @param newIcon New icon to assign to the project.
      */
-    fun updateProjectIcon(newIcon: ProjectIcon) {
+    private fun updateProjectIcon(newIcon: ProjectIcon) {
         val currentProject = _uiState.value.project ?: return
 
         launchOperation(
@@ -415,14 +449,14 @@ class ProjectDetailViewModel @Inject constructor(
     /**
      * Clears the pending delete project error message.
      */
-    fun clearDeleteProjectErrorMsg() {
+    private fun clearDeleteProjectErrorMsg() {
         _uiState.update { it.copy(deleteProjectErrorMsg = null) }
     }
 
     /**
      * Clears the pending save project error message.
      */
-    fun clearSaveProjectErrorShown() {
+    private fun clearSaveProjectErrorShown() {
         _uiState.update { it.copy(saveProjectErrorMsg = null) }
     }
 

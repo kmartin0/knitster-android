@@ -37,7 +37,7 @@ import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 import nl.kmartin.knitster.R
 import nl.kmartin.knitster.data.model.RowCounter
-import nl.kmartin.knitster.theme.Dimensions
+import nl.kmartin.knitster.theme.KnitsterDimensions
 
 /**
  * Displays a bottom sheet for creating or editing a row counter.
@@ -142,7 +142,7 @@ private fun RowCounterForm(
             modifier = Modifier
                 .widthIn(max = 360.dp)
                 .fillMaxWidth()
-                .padding(Dimensions.ScreenPadding),
+                .padding(KnitsterDimensions.ScreenPadding),
             verticalArrangement = Arrangement.spacedBy(12.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {

@@ -32,8 +32,8 @@ import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 import nl.kmartin.knitster.R
 import nl.kmartin.knitster.data.model.ProjectIcon
-import nl.kmartin.knitster.theme.Dimensions
 import nl.kmartin.knitster.theme.KnitsterBorder
+import nl.kmartin.knitster.theme.KnitsterDimensions
 import nl.kmartin.knitster.theme.knitsterBorder
 
 /**
@@ -76,7 +76,7 @@ internal fun ProjectDetailIconPickerBottomSheet(
             modifier = Modifier
                 .fillMaxWidth()
                 .verticalScroll(rememberScrollState())
-                .padding(Dimensions.ScreenPadding)
+                .padding(KnitsterDimensions.ScreenPadding)
         ) {
             Text(
                 text = stringResource(R.string.project_icon_picker_title),
@@ -148,7 +148,11 @@ private fun IconPickerItem(
 ) {
     FilledIconButton(
         modifier = Modifier
-            .knitsterBorder(width = if (isSelected) KnitsterBorder.Width * 2 else KnitsterBorder.Width)
+            .knitsterBorder(
+                width =
+                    if (isSelected) KnitsterBorder.Width * 2
+                    else KnitsterBorder.Width
+            )
             .size(64.dp)
             .aspectRatio(1f),
         onClick = onClick,

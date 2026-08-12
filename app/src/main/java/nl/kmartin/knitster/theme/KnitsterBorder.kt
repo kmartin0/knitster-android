@@ -1,19 +1,14 @@
 package nl.kmartin.knitster.theme
 
-
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.unit.dp
 
-/**
- * Defines the default border styling used throughout the app.
- */
 object KnitsterBorder {
-    val Width = 1.dp
+    val Width = KnitsterDimensions.DefaultBorderWidth
 
-    val BorderColor: Color
+    val Color: Color
         @Composable get() = MaterialTheme.colorScheme.outline
 
     val Shape: Shape

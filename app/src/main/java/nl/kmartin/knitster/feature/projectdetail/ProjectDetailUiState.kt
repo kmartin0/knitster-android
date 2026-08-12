@@ -1,7 +1,7 @@
 package nl.kmartin.knitster.feature.projectdetail
 
 import nl.kmartin.knitster.data.model.Project
-import nl.kmartin.knitster.ui.UiText
+import nl.kmartin.knitster.ui.model.UiText
 
 /**
  * Represents the UI state for the project detail screen.

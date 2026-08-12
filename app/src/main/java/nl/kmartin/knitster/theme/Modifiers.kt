@@ -19,13 +19,12 @@ import androidx.compose.ui.unit.Dp
 @Composable
 fun Modifier.knitsterBorder(
     width: Dp = KnitsterBorder.Width,
-    color: Color = KnitsterBorder.BorderColor,
+    color: Color = KnitsterBorder.Color,
     shape: Shape = KnitsterBorder.Shape
 ): Modifier {
-    return this
-        .clip(shape)
+    return clip(shape)
         .border(
             border = BorderStroke(width, color),
-            shape = shape,
+            shape = shape
         )
 }

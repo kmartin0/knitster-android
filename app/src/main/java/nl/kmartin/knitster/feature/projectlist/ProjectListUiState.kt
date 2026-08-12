@@ -1,7 +1,7 @@
 package nl.kmartin.knitster.feature.projectlist
 
 import nl.kmartin.knitster.data.model.Project
-import nl.kmartin.knitster.ui.UiText
+import nl.kmartin.knitster.ui.model.UiText
 
 data class ProjectListUiState(
     val projects: List<Project> = emptyList(),

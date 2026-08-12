@@ -22,7 +22,7 @@ import nl.kmartin.knitster.feature.settings.component.LanguagePicker
 import nl.kmartin.knitster.feature.settings.component.SettingsScreenTopAppBar
 import nl.kmartin.knitster.feature.settings.component.ThemeColorPicker
 import nl.kmartin.knitster.feature.settings.component.ThemeModePicker
-import nl.kmartin.knitster.theme.Dimensions
+import nl.kmartin.knitster.theme.KnitsterDimensions
 
 /**
  * Displays the content of the settings screen.
@@ -66,7 +66,7 @@ internal fun SettingsScreenContent(
             Column(
                 modifier = Modifier
                     .padding(innerPadding)
-                    .padding(Dimensions.ScreenPadding)
+                    .padding(KnitsterDimensions.ScreenPadding)
                     .verticalScroll(rememberScrollState()),
                 verticalArrangement = Arrangement.spacedBy(24.dp)
             ) {

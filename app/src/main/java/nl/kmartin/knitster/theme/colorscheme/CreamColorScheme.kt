@@ -1,4 +1,4 @@
-package nl.kmartin.knitster.theme.color
+package nl.kmartin.knitster.theme.colorscheme
 
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme

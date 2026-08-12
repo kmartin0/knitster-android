@@ -13,8 +13,9 @@ import nl.kmartin.knitster.data.model.LanguageMode
 import nl.kmartin.knitster.data.model.ThemeColor
 import nl.kmartin.knitster.data.model.ThemeMode
 import nl.kmartin.knitster.data.repository.SettingsRepository
-import nl.kmartin.knitster.ui.UiText
-import nl.kmartin.knitster.ui.launchOperation
+import nl.kmartin.knitster.ui.model.UiText
+import nl.kmartin.knitster.ui.viewmodel.MviViewModel
+import nl.kmartin.knitster.ui.viewmodel.launchOperation
 import javax.inject.Inject
 
 private const val TAG = "SettingsViewModel"
@@ -32,12 +33,28 @@ private const val TAG = "SettingsViewModel"
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
     private val settingsRepository: SettingsRepository
-) : ViewModel() {
+) : ViewModel(),
+    MviViewModel<SettingsUiState, SettingsIntent> {
     private val _uiState = MutableStateFlow(SettingsUiState())
-    val uiState: StateFlow<SettingsUiState> = _uiState.asStateFlow()
+    override val uiState: StateFlow<SettingsUiState> = _uiState.asStateFlow()
 
     init {
         observeAppSettings()
+    }
+
+    /**
+     * Handles a [SettingsIntent] by dispatching it to the appropriate settings action.
+     *
+     * @param intent Intent representing a user interaction or handled UI event.
+     */
+    override fun onIntent(intent: SettingsIntent) {
+        when (intent) {
+            is SettingsIntent.ThemeColorSelected -> setThemeColor(intent.themeColor)
+            is SettingsIntent.ThemeModeSelected -> setThemeMode(intent.themeMode)
+            is SettingsIntent.LanguageModeSelected -> setLanguageMode(intent.languageMode)
+            is SettingsIntent.KeepScreenAwakeChanged -> setKeepScreenAwake(intent.keepScreenAwake)
+            SettingsIntent.SettingsErrorDismissed -> clearSettingsErrorMsg()
+        }
     }
 
     /**
@@ -47,7 +64,7 @@ class SettingsViewModel @Inject constructor(
      *
      * @param newThemeColor Theme color to persist.
      */
-    fun setThemeColor(newThemeColor: ThemeColor) {
+    private fun setThemeColor(newThemeColor: ThemeColor) {
         launchOperation(
             operation = { settingsRepository.setThemeColor(newThemeColor) },
             onError = {
@@ -67,7 +84,7 @@ class SettingsViewModel @Inject constructor(
      *
      * @param newThemeMode Brightness mode to persist.
      */
-    fun setThemeMode(newThemeMode: ThemeMode) {
+    private fun setThemeMode(newThemeMode: ThemeMode) {
         launchOperation(
             operation = { settingsRepository.setThemeMode(newThemeMode) },
             onError = {
@@ -85,7 +102,7 @@ class SettingsViewModel @Inject constructor(
      *
      * @param newLanguageMode Language mode to apply.
      */
-    fun setLanguageMode(newLanguageMode: LanguageMode) {
+    private fun setLanguageMode(newLanguageMode: LanguageMode) {
         settingsRepository.setLanguageMode(newLanguageMode)
     }
 
@@ -96,7 +113,7 @@ class SettingsViewModel @Inject constructor(
      *
      * @param newKeepScreenAwake Whether to prevent the screen from turning off.
      */
-    fun setKeepScreenAwake(newKeepScreenAwake: Boolean) {
+    private fun setKeepScreenAwake(newKeepScreenAwake: Boolean) {
         launchOperation(
             operation = { settingsRepository.setKeepScreenAwake(newKeepScreenAwake) },
             onError = {
@@ -112,7 +129,7 @@ class SettingsViewModel @Inject constructor(
     /**
      * Clears the pending settings error message.
      */
-    fun clearSettingsErrorMsg() {
+    private fun clearSettingsErrorMsg() {
         _uiState.update { it.copy(settingsErrorMsg = null) }
     }
 

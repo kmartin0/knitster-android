@@ -1,4 +1,4 @@
-package nl.kmartin.knitster.ui
+package nl.kmartin.knitster.ui.viewmodel
 
 import android.util.Log
 import androidx.lifecycle.ViewModel

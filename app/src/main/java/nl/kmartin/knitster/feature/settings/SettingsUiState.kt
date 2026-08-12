@@ -1,7 +1,7 @@
 package nl.kmartin.knitster.feature.settings
 
 import nl.kmartin.knitster.data.model.AppSettings
-import nl.kmartin.knitster.ui.UiText
+import nl.kmartin.knitster.ui.model.UiText
 
 data class SettingsUiState(
     val settingsErrorMsg: UiText? = null,

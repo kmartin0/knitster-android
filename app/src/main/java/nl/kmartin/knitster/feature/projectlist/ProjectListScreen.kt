@@ -15,7 +15,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import nl.kmartin.knitster.data.model.Project
 import nl.kmartin.knitster.ui.component.ObserveSnackbarError
-import nl.kmartin.knitster.ui.toDisplayStringOrNull
+import nl.kmartin.knitster.ui.model.toDisplayStringOrNull
 
 /**
  * Displays the project list screen and coordinates its UI state and side effects.
@@ -44,13 +44,13 @@ fun ProjectListScreen(
     ObserveCreatedProject(
         createdProjectId = uiState.createdProjectId,
         onCreatedProject = onNavigateToProjectDetail,
-        onCreatedProjectHandled = viewModel::clearCreatedProjectId
+        onCreatedProjectHandled = { viewModel.onIntent(ProjectListIntent.CreatedProjectHandled) }
     )
 
     ObserveSnackbarError(
         errorMessage = uiState.createProjectErrorMsg.toDisplayStringOrNull(),
         snackbarHostState = snackbarHostState,
-        onErrorShown = viewModel::clearCreateProjectErrorMsg
+        onErrorShown = { viewModel.onIntent(ProjectListIntent.CreateProjectErrorDismissed) }
     )
 
     ObserveProjectListChanges(
@@ -60,7 +60,7 @@ fun ProjectListScreen(
 
     ProjectListContent(
         uiState = uiState,
-        onCreateProjectClick = viewModel::createNewProject,
+        onCreateProjectClick = { viewModel.onIntent(ProjectListIntent.CreateProject) },
         onProjectClick = onNavigateToProjectDetail,
         onSettingsClick = onNavigateToSettings,
         snackbarHostState = snackbarHostState,

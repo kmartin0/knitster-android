@@ -22,7 +22,7 @@ import nl.kmartin.knitster.feature.projectdetail.component.ProjectDetailDeleteRo
 import nl.kmartin.knitster.feature.projectdetail.component.ProjectDetailIconPickerBottomSheet
 import nl.kmartin.knitster.feature.projectdetail.component.ProjectDetailRowCounterFormBottomSheet
 import nl.kmartin.knitster.ui.component.ObserveSnackbarError
-import nl.kmartin.knitster.ui.toDisplayStringOrNull
+import nl.kmartin.knitster.ui.model.toDisplayStringOrNull
 
 /**
  * Displays the project detail screen and connects it to the [ProjectDetailViewModel].
@@ -51,32 +51,35 @@ fun ProjectDetailScreen(
     ObserveSnackbarError(
         errorMessage = uiState.saveProjectErrorMsg.toDisplayStringOrNull(),
         snackbarHostState = snackbarHostState,
-        onErrorShown = viewModel::clearSaveProjectErrorShown
+        onErrorShown = { viewModel.onIntent(ProjectDetailIntent.SaveProjectErrorDismissed) }
     )
 
     ObserveSnackbarError(
         errorMessage = uiState.deleteProjectErrorMsg.toDisplayStringOrNull(),
         snackbarHostState = snackbarHostState,
-        onErrorShown = viewModel::clearDeleteProjectErrorMsg
+        onErrorShown = { viewModel.onIntent(ProjectDetailIntent.DeleteProjectErrorDismissed) }
     )
 
     ObserveResetRowCounterUndo(
-        uiState.undoResetRowCounter,
+        undoResetRowCounter = uiState.undoResetRowCounter,
         snackbarHostState = snackbarHostState,
-        onUndo = viewModel::undoResetRowCounter,
-        onDismiss = viewModel::clearUndoResetRowCounter
+        onUndo = { viewModel.onIntent(ProjectDetailIntent.UndoResetRowCounter) },
+        onDismiss = { viewModel.onIntent(ProjectDetailIntent.ResetRowCounterUndoDismissed) }
     )
 
     ObserveProjectDeleted(
         projectDeleted = uiState.projectDeleted,
-        onProjectDeleted = onNavigateBack
+        onProjectDeleted = {
+            onNavigateBack()
+            viewModel.onIntent(ProjectDetailIntent.ProjectDeletedHandled)
+        }
     )
 
     if (showDeleteProjectDialog) {
         ProjectDetailDeleteProjectDialog(
             onConfirm = {
                 showDeleteProjectDialog = false
-                viewModel.deleteProject()
+                viewModel.onIntent(ProjectDetailIntent.DeleteProject)
             },
             onDismiss = { showDeleteProjectDialog = false },
             projectName = uiState.project?.name.orEmpty()
@@ -88,11 +91,9 @@ fun ProjectDetailScreen(
             rowCounter = rowCounter,
             onConfirm = {
                 pendingDeleteRowCounterId = null
-                viewModel.deleteRowCounter(rowCounter.id)
+                viewModel.onIntent(ProjectDetailIntent.DeleteRowCounter(rowCounter.id))
             },
-            onDismiss = {
-                pendingDeleteRowCounterId = null
-            }
+            onDismiss = { pendingDeleteRowCounterId = null }
         )
     }
 
@@ -100,12 +101,10 @@ fun ProjectDetailScreen(
         ProjectDetailRowCounterFormBottomSheet(
             title = stringResource(R.string.edit_counter),
             rowCounter = rowCounter,
-            onDismiss = {
-                pendingEditRowCounterId = null
-            },
+            onDismiss = { pendingEditRowCounterId = null },
             onSave = { updatedRowCounter ->
                 pendingEditRowCounterId = null
-                viewModel.updateRowCounter(updatedRowCounter)
+                viewModel.onIntent(ProjectDetailIntent.UpdateRowCounter(updatedRowCounter))
             }
         )
     }
@@ -114,12 +113,10 @@ fun ProjectDetailScreen(
         ProjectDetailRowCounterFormBottomSheet(
             title = stringResource(R.string.add_counter),
             rowCounter = RowCounter(),
-            onDismiss = {
-                showAddRowCounterBottomSheet = false
-            },
+            onDismiss = { showAddRowCounterBottomSheet = false },
             onSave = { newRowCounter ->
                 showAddRowCounterBottomSheet = false
-                viewModel.addRowCounter(newRowCounter)
+                viewModel.onIntent(ProjectDetailIntent.AddRowCounter(newRowCounter))
             }
         )
     }
@@ -127,9 +124,7 @@ fun ProjectDetailScreen(
     if (showIconPickerBottomSheet) {
         ProjectDetailIconPickerBottomSheet(
             onDismiss = { showIconPickerBottomSheet = false },
-            onIconSelected = { selectedIcon ->
-                viewModel.updateProjectIcon(selectedIcon)
-            },
+            onIconSelected = { viewModel.onIntent(ProjectDetailIntent.UpdateProjectIcon(it)) },
             currentIcon = uiState.project?.icon ?: ProjectIcon.DEFAULT
         )
     }
@@ -140,13 +135,13 @@ fun ProjectDetailScreen(
         snackbarHostState = snackbarHostState,
         onBackClick = onNavigateBack,
         onDeleteClick = { showDeleteProjectDialog = true },
-        onMoveCounterUpClick = viewModel::moveRowCounterUp,
-        onMoveCounterDownClick = viewModel::moveRowCounterDown,
-        onResetCounterClick = viewModel::resetRowCounter,
+        onMoveCounterUpClick = { viewModel.onIntent(ProjectDetailIntent.MoveRowCounterUp(it)) },
+        onMoveCounterDownClick = { viewModel.onIntent(ProjectDetailIntent.MoveRowCounterDown(it)) },
+        onResetCounterClick = { viewModel.onIntent(ProjectDetailIntent.ResetRowCounter(it)) },
         onEditCounterClick = { pendingEditRowCounterId = it },
         onDeleteCounterClick = { pendingDeleteRowCounterId = it },
-        onIncrementClick = viewModel::incrementRowCounter,
-        onDecrementClick = viewModel::decrementRowCounter,
+        onIncrementClick = { viewModel.onIntent(ProjectDetailIntent.IncrementRowCounter(it)) },
+        onDecrementClick = { viewModel.onIntent(ProjectDetailIntent.DecrementRowCounter(it)) },
         onAddRowCounterClick = { showAddRowCounterBottomSheet = true },
         onProjectIconClick = { showIconPickerBottomSheet = true },
         projectNameState = viewModel.projectNameState,

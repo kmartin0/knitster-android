@@ -10,14 +10,14 @@ import androidx.compose.ui.Modifier
 import nl.kmartin.knitster.data.model.ThemeColor
 import nl.kmartin.knitster.data.model.ThemeMode
 import nl.kmartin.knitster.data.model.resolveDarkTheme
-import nl.kmartin.knitster.theme.color.BlueDarkScheme
-import nl.kmartin.knitster.theme.color.BlueLightScheme
-import nl.kmartin.knitster.theme.color.CreamDarkScheme
-import nl.kmartin.knitster.theme.color.CreamLightScheme
-import nl.kmartin.knitster.theme.color.GreenDarkScheme
-import nl.kmartin.knitster.theme.color.GreenLightScheme
-import nl.kmartin.knitster.theme.color.PinkDarkScheme
-import nl.kmartin.knitster.theme.color.PinkLightScheme
+import nl.kmartin.knitster.theme.colorscheme.BlueDarkScheme
+import nl.kmartin.knitster.theme.colorscheme.BlueLightScheme
+import nl.kmartin.knitster.theme.colorscheme.CreamDarkScheme
+import nl.kmartin.knitster.theme.colorscheme.CreamLightScheme
+import nl.kmartin.knitster.theme.colorscheme.GreenDarkScheme
+import nl.kmartin.knitster.theme.colorscheme.GreenLightScheme
+import nl.kmartin.knitster.theme.colorscheme.PinkDarkScheme
+import nl.kmartin.knitster.theme.colorscheme.PinkLightScheme
 
 @Composable
 fun KnitsterTheme(
@@ -30,7 +30,7 @@ fun KnitsterTheme(
 
     MaterialTheme(
         colorScheme = colorScheme,
-        typography = Typography,
+        typography = KnitsterTypography,
         shapes = KnitsterShapes,
     ) {
         Surface(

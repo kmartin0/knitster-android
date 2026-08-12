@@ -7,7 +7,7 @@ import androidx.compose.runtime.remember
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import nl.kmartin.knitster.ui.component.ObserveSnackbarError
-import nl.kmartin.knitster.ui.toDisplayStringOrNull
+import nl.kmartin.knitster.ui.model.toDisplayStringOrNull
 
 /**
  * Displays the settings screen and connects it to the [SettingsViewModel].
@@ -29,16 +29,16 @@ fun SettingsScreen(
     ObserveSnackbarError(
         errorMessage = uiState.settingsErrorMsg.toDisplayStringOrNull(),
         snackbarHostState = snackbarHostState,
-        onErrorShown = viewModel::clearSettingsErrorMsg
+        onErrorShown = { viewModel.onIntent(SettingsIntent.SettingsErrorDismissed) }
     )
 
     SettingsScreenContent(
         snackbarHostState = snackbarHostState,
         settings = uiState.settings,
-        onThemeColorSelected = viewModel::setThemeColor,
-        onThemeModeSelected = viewModel::setThemeMode,
-        onLanguageModeSelected = viewModel::setLanguageMode,
-        onKeepScreenAwakeChanged = viewModel::setKeepScreenAwake,
+        onThemeColorSelected = { viewModel.onIntent(SettingsIntent.ThemeColorSelected(it)) },
+        onThemeModeSelected = { viewModel.onIntent(SettingsIntent.ThemeModeSelected(it)) },
+        onLanguageModeSelected = { viewModel.onIntent(SettingsIntent.LanguageModeSelected(it)) },
+        onKeepScreenAwakeChanged = { viewModel.onIntent(SettingsIntent.KeepScreenAwakeChanged(it)) },
         onBackClick = onNavigateBack
     )
 }
